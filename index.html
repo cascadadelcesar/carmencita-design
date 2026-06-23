@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carmencita Design - Panel de Control</title>
+    <title>CARMENCITA DESIGN - Panel de Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Librería para exportar a Excel con pestañas nativas -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --bg-primary: #f1f5f9;
@@ -23,7 +25,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-primary); color: var(--text-main); display: flex; min-height: 100vh; flex-direction: row; width: 100%; overflow-x: hidden; }
 
-        /* Estructura Base Adaptable Sin Desbordamientos */
         aside { width: 260px; background-color: var(--bg-sidebar); color: var(--white); padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 2rem; shrink: 0; }
         .brand h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .brand span { color: #f59e0b; font-size: 0.8rem; display: block; font-weight: 300; }
@@ -32,19 +33,16 @@
         nav button { background: none; border: none; color: #94a3b8; text-align: left; padding: 0.8rem 1rem; font-size: 0.9rem; cursor: pointer; border-radius: 0.375rem; transition: all 0.2s; font-weight: 500; width: 100%; }
         nav button.active, nav button:hover { background-color: rgba(255, 255, 255, 0.08); color: var(--white); }
 
-        /* Corrección de márgenes y ancho general */
         main { flex: 1; padding: 2rem; overflow-y: auto; overflow-x: hidden; width: 100%; max-width: calc(100% - 260px); }
         header { margin-bottom: 1.5rem; width: 100%; }
         header h2 { color: var(--text-dark); font-size: 1.5rem; font-weight: 700; }
 
-        /* Contenedor de Indicadores Adaptable */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; width: 100%; }
         .stat-card { background-color: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); width: 100%; }
         .stat-card p { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
         .stat-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-dark); word-break: break-all; }
         .explicacion-tag { font-size: 0.68rem; color: var(--text-muted); display: block; margin-top: 2px; line-height: 1.2; }
 
-        /* Filtros y Paneles Flexibles */
         .filter-bar { background: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; width: 100%; }
         .es-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; width: 100%; }
         
@@ -53,19 +51,16 @@
         .panel { background-color: var(--white); border-radius: 0.5rem; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1.5rem; width: 100%; overflow: hidden; }
         .panel h3 { font-size: 1rem; margin-bottom: 1rem; font-weight: 700; color: var(--text-dark); border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
 
-        /* Tablas Totalmente Responsivas */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; background: var(--white); }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 700px; }
         th { background-color: #f8fafc; padding: 0.75rem; color: var(--text-dark); font-weight: 600; border-bottom: 2px solid var(--border); }
         td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; color: var(--text-main); vertical-align: middle; }
 
-        /* Formularios */
         .flex-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; background: #f8fafc; padding: 1.25rem; border-radius: 0.375rem; border: 1px dashed var(--border); margin-bottom: 1rem; width: 100%; }
         .campo { display: flex; flex-direction: column; gap: 4px; width: 100%; }
         .campo label { font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
         input, select, textarea { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem; font-size: 0.85rem; outline: none; background: var(--white); width: 100%; }
 
-        /* Botones */
         .btn { background-color: var(--bg-sidebar); color: var(--white); border: none; padding: 0.6rem 1.25rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center; }
         .btn:hover { background-color: #1e293b; }
         .btn-verde { background-color: var(--success); } .btn-verde:hover { background-color: #15803d; }
@@ -74,13 +69,12 @@
         .btn-accion { padding: 0.35rem 0.5rem; font-size: 0.75rem; border-radius: 0.25rem; border: none; cursor: pointer; font-weight: 600; }
         .btn-eliminar { background-color: #fee2e2; color: #991b1b; }
 
-        .badge { padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.7 rules; font-weight: 600; text-transform: uppercase; }
+        .badge { padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .bg-efectivo { background-color: #fef3c7; color: #92400e; }
         .bg-banco { background-color: #e0f2fe; color: #0369a1; }
         .badge-pendiente { background-color: #ffedd5; color: #c2410c; }
         .badge-entregado { background-color: #dcfce7; color: #15803d; }
 
-        /* Modales */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
         .modal-content { background: var(--white); padding: 1.5rem; border-radius: 0.5rem; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; cursor: pointer; font-weight: 700; color: var(--text-muted); }
@@ -88,12 +82,10 @@
         .box-flotante { display: none; background: #f0fdf4; border: 2px solid var(--success); padding: 1.25rem; margin-bottom: 1.5rem; border-radius: 0.5rem; width: 100%; }
         .seccion-ocultable { display: none; background: #f8fafc; padding: 1rem; border: 1px solid var(--border); border-radius: 0.375rem; margin-bottom: 1.5rem; width: 100%; }
 
-        /* Estado Firebase */
         .status-firebase { font-size: 0.75rem; color: #94a3b8; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); border-radius: 0.25rem; font-weight: 500; }
-        .dot { width: 8px; height: 8px; background: #e2e2e8f0; border-radius: 50%; display: inline-block; }
+        .dot { width: 8px; height: 8px; background: #e2e8f0; border-radius: 50%; display: inline-block; }
         .dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
 
-        /* Adaptabilidad en pantallas móviles y tablets */
         @media(max-width: 768px) {
             body { flex-direction: column; }
             aside { width: 100%; padding: 1rem; gap: 1rem; }
@@ -113,7 +105,7 @@
     <!-- Menú de Navegación Lateral -->
     <aside>
         <div class="brand">
-            <h1>Carmencita</h1>
+            <h1>CARMENCITA DESIGN</h1>
             <span>Mobiliario y Diseño</span>
         </div>
         <nav>
@@ -167,31 +159,43 @@
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;" id="txt-modulo-desc">Resumen visual claro del dinero de tu negocio.</p>
         </header>
 
-        <!-- BARRA DE BÚSQUEDA COMPARTIDA ADAPTABLE -->
+        <!-- BARRA DE BÚSQUEDA Y FILTROS COMPARTIDA -->
         <div class="filter-bar" id="barra-busqueda-general">
-            <div style="flex: 1; min-width: 240px;" class="campo">
+            <div style="flex: 1; min-width: 200px;" class="campo">
                 <label id="lbl-buscador-dinamico">🔍 Buscar en este módulo</label>
                 <input type="text" id="f-buscar" oninput="render()" placeholder="Escribe para filtrar la información de inmediato...">
             </div>
+            <div id="div-filtro-tipo" style="width: 150px;" class="campo">
+                <label>⚖️ Tipo Movimiento</label>
+                <select id="f-tipo-movimiento" onchange="render()">
+                    <option value="TODOS">🔄 Ver Ambos</option>
+                    <option value="INGRESOS">📥 Solo Ingresos</option>
+                    <option value="EGRESOS">📤 Solo Egresos</option>
+                </select>
+            </div>
             <div id="div-filtro-desde" style="width: 140px;" class="campo"><label>📅 Desde</label><input type="date" id="f-desde" onchange="render()"></div>
             <div id="div-filtro-hasta" style="width: 140px;" class="campo"><label>📅 Hasta</label><input type="date" id="f-hasta" onchange="render()"></div>
-            <button class="btn" style="background:#64748b; height:38px; margin-top:16px;" onclick="limpiarFiltros()">Limpiar Filtro</button>
+            
+            <div style="display:flex; gap:0.5rem; margin-top:16px;">
+                <button class="btn" style="background:#64748b; height:38px;" onclick="limpiarFiltros()">Limpiar Filtro</button>
+                <button class="btn btn-verde" style="height:38px;" onclick="exportarBaseDeDatosExcel()">🟢 Descargar Excel</button>
+            </div>
         </div>
 
         <!-- MÓDULO 1: VISTA RÁPIDA -->
         <div id="mod-dashboard" class="seccion-vista activa">
             <div class="es-grid">
-                <div class="panel" style="border-top: 3px solid var(--success);">
+                <div class="panel" id="panel-dashboard-entradas" style="border-top: 3px solid var(--success);">
                     <h3 style="color: var(--success);">📥 INGRESOS (Entradas)</h3>
                     <div class="table-responsive">
                         <table id="t-dashboard-entradas">
-                            <thead><tr><th>Fecha</th><th>Origen / Cliente</th><th>Medio</th><th>Monto</th></tr></thead>
+                            <thead><tr><th>Fecha</th><th>Origen / Cliente</th><th>Medio</th><th>Monto</th><th>X</th></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="panel" style="border-top: 3px solid var(--danger);">
+                <div class="panel" id="panel-dashboard-salidas" style="border-top: 3px solid var(--danger);">
                     <h3 style="color: var(--danger);">📤 EGRESOS (Salidas)</h3>
                     <div class="table-responsive">
                         <table id="t-dashboard-salidas">
@@ -212,6 +216,7 @@
                 <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:flex-end;">
                     <div class="campo" style="flex:1; min-width:180px;"><label>Monto a abonar ($)</label><input type="text" id="abono-monto-input" oninput="formatMoni(this)" placeholder="Ej: 1.000.000"></div>
                     <div class="campo" style="width:160px;"><label>Medio de Recibo</label><select id="abono-medio-input"><option value="Banco">Banco</option><option value="Efectivo Grande">Efectivo Principal</option></select></div>
+                    <div class="campo" style="width:140px;"><label>Fecha Abono</label><input type="date" id="abono-fecha-input"></div>
                     <button class="btn btn-verde" onclick="procesarAbonoEstructurado()">Guardar Abono</button>
                     <button class="btn" style="background:#64748b;" onclick="cerrarBoxAbono()">X</button>
                 </div>
@@ -237,6 +242,7 @@
                     <div class="campo"><label>Correo Electrónico</label><input type="email" id="v-correo" placeholder="Correo"></div>
                     <div class="campo"><label>Descripción del Trabajo</label><input type="text" id="v-desc" placeholder="Ej: Cocina mueble RH"></div>
                     <div class="campo"><label>Valor Total ($)</label><input type="text" id="v-total" oninput="formatMoni(this)" placeholder="Total"></div>
+                    <div class="campo" id="box-v-fecha"><label>Fecha del Contrato (Opcional)</label><input type="date" id="v-fecha-registro"><small style="font-size:0.68rem; color:var(--text-muted);">Dejar vacío si es de hoy o seleccionar si es antiguo.</small></div>
                     <div class="campo" id="box-v-abono"><label>Abono de Cuota Hoy ($)</label><input type="text" id="v-abono" oninput="formatMoni(this)" placeholder="0 si no hay"></div>
                     <div class="campo" id="box-v-medio"><label>Medio de Recibo</label><select id="v-medio"><option value="Banco">Banco</option><option value="Efectivo Grande">Efectivo Principal</option></select></div>
                 </div>
@@ -260,7 +266,7 @@
             </div>
         </div>
 
-        <!-- MÓDULO 3: COBROS -->
+        <!-- MÓDULO COBROS -->
         <div id="mod-cobros" class="seccion-vista">
             <div class="panel" style="border-top:4px solid var(--danger);">
                 <h3>🚨 Cuentas por Cobrar Pendientes</h3>
@@ -273,7 +279,7 @@
             </div>
         </div>
 
-        <!-- MÓDULO 4: PAGOS Y OPERARIOS -->
+        <!-- MÓDULO PAGO OPERARIOS -->
         <div id="mod-nomina" class="seccion-vista">
             <button class="btn btn-azul" style="margin-bottom:1rem; width:100%;" onclick="toggleSeccionTrabajador()">➕ Crear Nuevo Trabajador / Operario</button>
             
@@ -313,7 +319,7 @@
             </div>
         </div>
 
-        <!-- MÓDULO 5: GASTOS EMPRESA -->
+        <!-- MÓDULO GASTOS EMPRESA -->
         <div id="mod-gastos" class="seccion-vista">
             <div class="panel">
                 <h3>💡 Registro de Gastos Generales</h3>
@@ -347,7 +353,7 @@
             </div>
         </div>
 
-        <!-- MÓDULO 6: CAJA MENOR -->
+        <!-- MÓDULO CAJA MENOR -->
         <div id="mod-cajamenor" class="seccion-vista">
             <div class="panel">
                 <h3>🪙 Caja Menor Auxiliar del Taller</h3>
@@ -378,7 +384,7 @@
         </div>
     </div>
 
-    <!-- Integración Firebase en Tiempo Real -->
+    <!-- Integración Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -423,6 +429,10 @@
         };
 
         window.getDbData = () => db;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            establecerRangoMesActual();
+        });
     </script>
 
     <script>
@@ -430,7 +440,22 @@
         function cleanNum(t) { return parseFloat(t.toString().replace(/\./g, '')) || 0; }
         function m(n) { return '$' + n.toLocaleString('es-CO'); }
 
+        function establecerRangoMesActual() {
+            let hoy = new Date();
+            let y = hoy.getFullYear();
+            let m = hoy.getMonth() + 1;
+            let mStr = m < 10 ? '0' + m : m;
+            
+            let primerDia = `${y}-${mStr}-01`;
+            let ultimoDia = new Date(y, m, 0).getDate();
+            let ultimoDiaStr = `${y}-${mStr}-${ultimoDia < 10 ? '0' + ultimoDia : ultimoDia}`;
+            
+            document.getElementById('f-desde').value = primerDia;
+            document.getElementById('f-hasta').value = ultimoDiaStr;
+        }
+
         function calcular18DiasHabiles(fechaInicialStr) {
+            if(!fechaInicialStr) return '';
             let fecha = new Date(fechaInicialStr + 'T12:00:00');
             let diasSuma = 0;
             while (diasSuma < 18) {
@@ -448,8 +473,8 @@
 
         function limpiarFiltros() {
             document.getElementById('f-buscar').value = ''; 
-            document.getElementById('f-desde').value = ''; 
-            document.getElementById('f-hasta').value = ''; 
+            document.getElementById('f-tipo-movimiento').value = 'TODOS';
+            establecerRangoMesActual();
             render();
         }
 
@@ -466,17 +491,72 @@
             }
         }
 
+        function exportarBaseDeDatosExcel() {
+            let db = window.getDbData();
+            let wb = XLSX.utils.book_new();
+
+            let dataVentas = db.ventas.map(v => ({
+                "ID": v.id, "Fecha Registro": v.fechaRegistro || '', "Cliente": v.cliente, "Cédula/NIT": v.cedula || '', 
+                "Teléfono": v.telefono, "Dirección": v.direccion, "Barrio": v.barrio || '', "Proyecto": v.desc, 
+                "Valor Total": v.total, "Total Abonado": v.abonado, "Saldo Pendiente": (v.total - v.abonado), "Estado Despacho": v.estadoEntrega || 'Pendiente'
+            }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataVentas), "Ventas_Contratos");
+
+            let dataIngresos = db.ingresosDirectos.map(i => ({
+                "ID": i.id, "Fecha": i.fecha, "Origen / Concepto": i.origen, "Medio Recibo": i.medio, "Monto ($)": i.monto
+            }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataIngresos), "Ingresos_VistaRapida");
+
+            let dataGastos = db.gastos.map(g => ({
+                "ID": g.id, "Fecha": g.fecha, "Categoría": g.cat, "Detalle / Concepto": g.concepto, "Medio Pago": g.medio, "Monto ($)": g.monto
+            }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataGastos), "Gastos_Egresos");
+
+            let dataNomina = db.nomina.map(n => ({
+                "ID": n.id, "Fecha": n.fecha, "Operario": n.nombre, "Detalle Vale": n.detalle, "Origen Dinero": n.origen, "Monto ($)": n.monto
+            }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataNomina), "Vales_Nomina");
+
+            let dataCaja = db.cajaMenor.map(cm => ({
+                "ID": cm.id, "Fecha": cm.fecha, "Tipo Movimiento": cm.tipo, "Concepto": cm.concepto, "Monto ($)": cm.monto
+            }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataCaja), "Caja_Menor");
+
+            let fechaNombre = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `Respaldo_CarmencitaDesign_${fechaNombre}.xlsx`);
+        }
+
         function render() {
             if(!window.getDbData) return; 
             let db = window.getDbData();
 
-            let ingresosBanco = db.ingresosDirectos.filter(i => i.medio === 'Banco').reduce((s, i) => s + i.monto, 0);
-            let ingresosEfectivo = db.ingresosDirectos.filter(i => i.medio === 'Efectivo Grande').reduce((s, i) => s + i.monto, 0);
-            let gastosBanco = db.gastos.filter(g => g.medio === 'Banco').reduce((s, g) => s + g.monto, 0);
-            let gastosEfectivo = db.gastos.filter(g => g.medio === 'Efectivo Grande').reduce((s, g) => s + g.monto, 0);
-            let nominaBanco = db.nomina.filter(n => n.origen === 'Banco').reduce((s, n) => s + n.monto, 0);
-            let nominaEfectivo = db.nomina.filter(n => n.origen === 'Efectivo Grande').reduce((s, n) => s + n.monto, 0);
-            let menosMenor = db.cajaMenor.filter(cm => cm.tipo === 'Gasto Menor').reduce((s, cm) => s + cm.monto, 0);
+            let txtFiltro = document.getElementById('f-buscar').value.toLowerCase();
+            let fDesde = document.getElementById('f-desde').value;
+            let fHasta = document.getElementById('f-hasta').value;
+            let tipoMov = document.getElementById('f-tipo-movimiento').value;
+
+            function cumpleFiltroBase(fecha, textoComparar) {
+                if (window.moduloActual === 'dashboard') {
+                    if (fDesde && fecha < fDesde) return false;
+                    if (fHasta && fecha > fHasta) return false;
+                }
+                if (txtFiltro && !textoComparar.toLowerCase().includes(txtFiltro)) return false;
+                return true;
+            }
+
+            // Ordenamiento cronológico global (recientes arriba)
+            if (db.ventas) { db.ventas.sort((a, b) => new Date(b.fechaRegistro || '') - new Date(a.fechaRegistro || '')); }
+            if (db.ingresosDirectos) { db.ingresosDirectos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); }
+            if (db.gastos) { db.gastos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); }
+            if (db.nomina) { db.nomina.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); }
+
+            let ingresosBanco = db.ingresosDirectos.filter(i => i.medio === 'Banco' && cumpleFiltroBase(i.fecha, '')).reduce((s, i) => s + i.monto, 0);
+            let ingresosEfectivo = db.ingresosDirectos.filter(i => i.medio === 'Efectivo Grande' && cumpleFiltroBase(i.fecha, '')).reduce((s, i) => s + i.monto, 0);
+            let gastosBanco = db.gastos.filter(g => g.medio === 'Banco' && cumpleFiltroBase(g.fecha, '')).reduce((s, g) => s + g.monto, 0);
+            let gastosEfectivo = db.gastos.filter(g => g.medio === 'Efectivo Grande' && cumpleFiltroBase(g.fecha, '')).reduce((s, g) => s + g.monto, 0);
+            let nominaBanco = db.nomina.filter(n => n.origen === 'Banco' && cumpleFiltroBase(n.fecha, '')).reduce((s, n) => s + n.monto, 0);
+            let nominaEfectivo = db.nomina.filter(n => n.origen === 'Efectivo Grande' && cumpleFiltroBase(n.fecha, '')).reduce((s, n) => s + n.monto, 0);
+            let menosMenor = db.cajaMenor.filter(cm => cm.tipo === 'Gasto Menor' && cumpleFiltroBase(cm.fecha, '')).reduce((s, cm) => s + cm.monto, 0);
 
             let globalIngresadoTodo = ingresosBanco + ingresosEfectivo;
             let totalDisponibleBanco = ingresosBanco - (gastosBanco + nominaBanco);
@@ -493,24 +573,29 @@
             const nSelect = document.getElementById('n-select-trabajador'); nSelect.innerHTML = '';
             db.trabajadores.forEach(t => { nSelect.innerHTML += `<option value="${t.nombre}">${t.nombre} [${t.cargo}]</option>`; });
 
-            let txtFiltro = document.getElementById('f-buscar').value.toLowerCase();
-            let fDesde = document.getElementById('f-desde').value;
-            let fHasta = document.getElementById('f-hasta').value;
-
-            function cumpleFiltroBase(fecha, textoComparar) {
-                if (window.moduloActual === 'dashboard') {
-                    if (fDesde && fecha < fDesde) return false;
-                    if (fHasta && fecha > fHasta) return false;
+            if(window.moduloActual === 'dashboard') {
+                if(tipoMov === 'INGRESOS') {
+                    document.getElementById('panel-dashboard-entradas').style.display = 'block';
+                    document.getElementById('panel-dashboard-salidas').style.display = 'none';
+                    document.getElementById('mod-dashboard').querySelector('.es-grid').style.gridTemplateColumns = '1fr';
+                } else if(tipoMov === 'EGRESOS') {
+                    document.getElementById('panel-dashboard-entradas').style.display = 'none';
+                    document.getElementById('panel-dashboard-salidas').style.display = 'block';
+                    document.getElementById('mod-dashboard').querySelector('.es-grid').style.gridTemplateColumns = '1fr';
+                } else {
+                    document.getElementById('panel-dashboard-entradas').style.display = 'block';
+                    document.getElementById('panel-dashboard-salidas').style.display = 'block';
+                    if (window.innerWidth > 768) {
+                        document.getElementById('mod-dashboard').querySelector('.es-grid').style.gridTemplateColumns = 'repeat(auto-fit, minmax(320px, 1fr))';
+                    }
                 }
-                if (txtFiltro && !textoComparar.toLowerCase().includes(txtFiltro)) return false;
-                return true;
             }
 
-            // 1. RENDERING VISTA RÁPIDA
+            // 1. RENDERING VISTA RÁPIDA (INGRESOS / EGRESOS)
             const bEntradas = document.querySelector('#t-dashboard-entradas tbody'); bEntradas.innerHTML = '';
             db.ingresosDirectos.forEach(i => {
                 if(cumpleFiltroBase(i.fecha, i.origen + " " + i.medio)) {
-                    bEntradas.innerHTML += `<tr><td>${i.fecha}</td><td><strong>${i.origen}</strong></td><td><span class="badge bg-banco">${i.medio}</span></td><td style="color:var(--success); font-weight:600;">${m(i.monto)}</td></tr>`;
+                    bEntradas.innerHTML += `<tr><td>${i.fecha}</td><td><strong>${i.origen}</strong></td><td><span class="badge bg-banco">${i.medio}</span></td><td style="color:var(--success); font-weight:600;">${m(i.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarIngresoDirecto('${i.id}')">x</button></td></tr>`;
                 }
             });
 
@@ -653,6 +738,7 @@
             document.getElementById('v-correo').value = v.correo;
             document.getElementById('v-desc').value = v.desc;
             document.getElementById('v-total').value = v.total.toLocaleString('es-CO');
+            document.getElementById('v-fecha-registro').value = v.fechaRegistro || '';
             
             document.getElementById('box-v-abono').style.display = 'none';
             document.getElementById('box-v-medio').style.display = 'none';
@@ -666,7 +752,7 @@
             document.getElementById('v-id-edicion').value = '';
             document.getElementById('v-cliente').value = ''; document.getElementById('v-cedula').value = ''; document.getElementById('v-direccion').value = '';
             document.getElementById('v-barrio').value = ''; document.getElementById('v-telefono').value = ''; document.getElementById('v-correo').value = '';
-            document.getElementById('v-desc').value = ''; document.getElementById('v-total').value = '';
+            document.getElementById('v-desc').value = ''; document.getElementById('v-total').value = ''; document.getElementById('v-fecha-registro').value = '';
             
             document.getElementById('box-v-abono').style.display = 'flex';
             document.getElementById('box-v-medio').style.display = 'flex';
@@ -687,7 +773,9 @@
             let correo = document.getElementById('v-correo').value;
             let desc = document.getElementById('v-desc').value;
             let total = cleanNum(document.getElementById('v-total').value);
-            let fechaHoy = new Date().toISOString().split('T')[0];
+            
+            let fechaSeleccionada = document.getElementById('v-fecha-registro').value;
+            let fechaFinal = fechaSeleccionada ? fechaSeleccionada : new Date().toISOString().split('T')[0];
 
             if(!cliente || total <= 0) return alert('Verifica datos y monto total.');
 
@@ -695,19 +783,21 @@
                 let v = db.ventas.find(x => x.id === idEdicion);
                 v.cliente = cliente; v.cedula = cedula; v.direccion = direccion;
                 v.barrio = barrio; v.telefono = telefono; v.correo = correo;
-                v.desc = desc; v.total = total;
+                v.desc = desc; v.total = total; v.fechaRegistro = fechaFinal;
                 cancelarEdicionVenta();
             } else {
                 let abono = cleanNum(document.getElementById('v-abono').value);
                 let medio = document.getElementById('v-medio').value;
-                db.ventas.push({ id: 'v_'+Date.now(), fechaRegistro: fechaHoy, cliente, cedula, direccion, barrio, telefono, correo, desc, total, abonado: abono, estadoEntrega: 'Pendiente' });
+                let idVentaNueva = 'v_'+Date.now();
+                db.ventas.push({ id: idVentaNueva, fechaRegistro: fechaFinal, cliente, cedula, direccion, barrio, telefono, correo, desc, total, abonado: abono, estadoEntrega: 'Pendiente' });
+                
                 if (abono > 0) {
-                    db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: fechaHoy, origen: `Abono Inicial - ${cliente}`, medio, monto: abono });
+                    db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: fechaFinal, origen: `Abono Inicial - ${cliente} (${idVentaNueva})`, medio, monto: abono });
                 }
                 
                 document.getElementById('v-cliente').value = ''; document.getElementById('v-cedula').value = ''; document.getElementById('v-direccion').value = ''; 
                 document.getElementById('v-barrio').value = ''; document.getElementById('v-telefono').value = ''; document.getElementById('v-correo').value = ''; 
-                document.getElementById('v-desc').value = ''; document.getElementById('v-total').value = ''; document.getElementById('v-abono').value = '';
+                document.getElementById('v-desc').value = ''; document.getElementById('v-total').value = ''; document.getElementById('v-abono').value = ''; document.getElementById('v-fecha-registro').value = '';
             }
             salvar();
         }
@@ -732,6 +822,7 @@
             document.getElementById('lbl-abono-cliente').innerText = cliente;
             document.getElementById('abono-id-cliente').value = id;
             document.getElementById('abono-monto-input').value = '';
+            document.getElementById('abono-fecha-input').value = new Date().toISOString().split('T')[0];
         }
         function cerrarBoxAbono() { document.getElementById('box-abono-practico').style.display = 'none'; }
         
@@ -740,10 +831,11 @@
             let id = document.getElementById('abono-id-cliente').value;
             let monto = cleanNum(document.getElementById('abono-monto-input').value);
             let medio = document.getElementById('abono-medio-input').value;
+            let fechaAbono = document.getElementById('abono-fecha-input').value || new Date().toISOString().split('T')[0];
 
             if (monto <= 0) return alert('Monto inválido.');
             let v = db.ventas.find(x => x.id === id); v.abonado += monto;
-            db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: new Date().toISOString().split('T')[0], origen: `Abono Cartera - ${v.cliente}`, medio, monto });
+            db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: fechaAbono, origen: `Abono Cartera - ${v.cliente} (${id})`, medio, monto });
             cerrarBoxAbono(); salvar();
         }
 
@@ -786,10 +878,40 @@
             salvar();
         }
 
-        function eliminarVenta(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.ventas = db.ventas.filter(x=>x.id!==id); salvar(); } }
-        function eliminarNomina(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.nomina = db.nomina.filter(x=>x.id!==id); salvar(); } }
-        function eliminarGasto(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.gastos = db.gastos.filter(x=>x.id!==id); salvar(); } }
-        function eliminarCM(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.cajaMenor = db.cajaMenor.filter(x=>x.id!==id); salvar(); } }
+        // ELIMINACIÓN DE VENTA: Remueve el contrato y purga todos los abonos en cascada
+        function eliminarVenta(id) { 
+            let db = window.getDbData(); 
+            if(confirm('¿Estás seguro de eliminar este contrato? Esto removerá permanentemente todos sus abonos de la Vista Rápida.')) { 
+                db.ventas = db.ventas.filter(x => x.id !== id); 
+                if(db.ingresosDirectos) {
+                    db.ingresosDirectos = db.ingresosDirectos.filter(i => !i.origen.includes(`(${id})`));
+                }
+                salvar(); 
+            } 
+        }
+
+        // ELIMINACIÓN INDIVIDUAL DESDE LA VISTA RÁPIDA DE INGRESOS
+        function eliminarIngresoDirecto(id) {
+            let db = window.getDbData();
+            if(confirm('¿Deseas eliminar este ingreso específico? Si provino de un abono de venta, deberás ajustar manualmente el saldo en la ficha del cliente.')) {
+                
+                // Opcional: Descontar del total del cliente si contiene el patrón de ID de venta (id)
+                let ingreso = db.ingresosDirectos.find(x => x.id === id);
+                if (ingreso && ingreso.origen.includes('(')) {
+                    let partes = ingreso.origen.split('(');
+                    let vId = partes[partes.length - 1].replace(')', '').trim();
+                    let v = db.ventas.find(x => x.id === vId);
+                    if (v) { v.abonado = Math.max(0, v.abonado - ingreso.monto); }
+                }
+
+                db.ingresosDirectos = db.ingresosDirectos.filter(x => x.id !== id);
+                salvar();
+            }
+        }
+
+        function eliminarNomina(id) { let db = window.getDbData(); if(confirm('¿Eliminar registro de nómina?')) { db.nomina = db.nomina.filter(x=>x.id!==id); salvar(); } }
+        function eliminarGasto(id) { let db = window.getDbData(); if(confirm('¿Eliminar este gasto?')) { db.gastos = db.gastos.filter(x=>x.id!==id); salvar(); } }
+        function eliminarCM(id) { let db = window.getDbData(); if(confirm('¿Eliminar movimiento de caja menor?')) { db.cajaMenor = db.cajaMenor.filter(x=>x.id!==id); salvar(); } }
 
         function irA(id) {
             window.moduloActual = id;
@@ -804,9 +926,9 @@
             const labels = {
                 dashboard: "🔍 Buscar en Entradas/Salidas",
                 ventas: "🔍 Buscar por Cliente, Proyecto o Cédula",
-                entregas: "🔍 Buscar por Cliente, Dirección, Barrio o Estado (Pendiente/Entregado)",
+                entregas: "🔍 Buscar por Cliente, Dirección, Barrio o Estado",
                 cobros: "🔍 Buscar Deudor o Trabajo",
-                nomina: "🔍 Buscar Vales por Nombre de Operario o Concepto",
+                nomina: "🔍 Buscar Vales por Nombre de Operario",
                 gastos: "🔍 Buscar Gasto por Categoría o Concepto",
                 cajamenor: "🔍 Buscar Movimiento de Caja Menor"
             };
@@ -815,9 +937,11 @@
             if (id === 'dashboard') {
                 document.getElementById('div-filtro-desde').style.display = 'flex';
                 document.getElementById('div-filtro-hasta').style.display = 'flex';
+                document.getElementById('div-filtro-tipo').style.display = 'flex';
             } else {
                 document.getElementById('div-filtro-desde').style.display = 'none';
                 document.getElementById('div-filtro-hasta').style.display = 'none';
+                document.getElementById('div-filtro-tipo').style.display = 'none';
             }
 
             const t = { 
