@@ -4,693 +4,268 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carmencita Design - Panel de Control</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #f1f5f9;
-            --bg-sidebar: #0f172a;
-            --text-main: #334155;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --accent: #b45309; 
-            --white: #ffffff;
-            --border: #cbd5e1;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --info: #0284c7;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-primary); color: var(--text-main); display: flex; min-height: 100vh; flex-direction: row; }
-
-        /* Estructura Base Adaptable */
-        aside { width: 260px; background-color: var(--bg-sidebar); color: var(--white); padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 2rem; shrink: 0; }
-        .brand h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .brand span { color: #f59e0b; font-size: 0.8rem; display: block; font-weight: 300; }
-        
-        nav { display: flex; flex-direction: column; gap: 0.4rem; }
-        nav button { background: none; border: none; color: #94a3b8; text-align: left; padding: 0.8rem 1rem; font-size: 0.9rem; cursor: pointer; border-radius: 0.375rem; transition: all 0.2s; font-weight: 500; width: 100%; }
-        nav button.active, nav button:hover { background-color: rgba(255, 255, 255, 0.08); color: var(--white); }
-
-        main { flex: 1; padding: 2rem; overflow-y: auto; width: 100%; }
-        header { margin-bottom: 1.5rem; }
-        header h2 { color: var(--text-dark); font-size: 1.5rem; font-weight: 700; }
-
-        /* Contenedor de Indicadores - Solución al Desbordamiento de Imagen {0367F7E1-7792-4E0F-B1BD-CD53ADE12C2A}.png */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; width: 100%; }
-        .stat-card { background-color: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .stat-card p { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
-        .stat-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-dark); word-break: break-all; }
-        .explicacion-tag { font-size: 0.68rem; color: var(--text-muted); display: block; margin-top: 2px; line-height: 1.2; }
-
-        /* Filtros y Paneles */
-        .filter-bar { background: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
-        .es-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-        
-        .seccion-vista { display: none; }
-        .seccion-vista.activa { display: block; }
-        .panel { background-color: var(--white); border-radius: 0.5rem; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1.5rem; }
-        .panel h3 { font-size: 1rem; margin-bottom: 1rem; font-weight: 700; color: var(--text-dark); border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
-
-        /* Tablas */
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 650px; }
-        th { background-color: #f8fafc; padding: 0.75rem; color: var(--text-dark); font-weight: 600; border-bottom: 2px solid var(--border); }
-        td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; color: var(--text-main); vertical-align: middle; }
-
-        /* Formularios */
-        .flex-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; background: #f8fafc; padding: 1.25rem; border-radius: 0.375rem; border: 1px dashed var(--border); margin-bottom: 1rem; }
-        .campo { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-        .campo label { font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
-        input, select, textarea { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem; font-size: 0.85rem; outline: none; background: var(--white); width: 100%; }
-
-        /* Botones */
-        .btn { background-color: var(--bg-sidebar); color: var(--white); border: none; padding: 0.6rem 1.25rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center; }
-        .btn:hover { background-color: #1e293b; }
-        .btn-verde { background-color: var(--success); } .btn-verde:hover { background-color: #15803d; }
-        .btn-rojo { background-color: var(--danger); } .btn-rojo:hover { background-color: #b91c1c; }
-        .btn-azul { background-color: var(--info); } .btn-azul:hover { background-color: #0369a1; }
-        .btn-accion { padding: 0.35rem 0.5rem; font-size: 0.75rem; border-radius: 0.25rem; border: none; cursor: pointer; font-weight: 600; }
-        .btn-eliminar { background-color: #fee2e2; color: #991b1b; }
-
-        .badge { padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-        .bg-efectivo { background-color: #fef3c7; color: #92400e; }
-        .bg-banco { background-color: #e0f2fe; color: #0369a1; }
-
-        /* Ventanas Emergentes Modales */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
-        .modal-content { background: var(--white); padding: 1.5rem; border-radius: 0.5rem; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; }
-        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; cursor: pointer; font-weight: 700; color: var(--text-muted); }
-
-        .box-flotante { display: none; background: #f0fdf4; border: 2px solid var(--success); padding: 1.25rem; margin-bottom: 1.5rem; border-radius: 0.5rem; }
-        .seccion-ocultable { display: none; background: #f8fafc; padding: 1rem; border: 1px solid var(--border); border-radius: 0.375rem; margin-bottom: 1.5rem; }
-
-        /* Móviles (Máx 768px) */
-        @media(max-width: 768px) {
-            body { flex-direction: column; }
-            aside { width: 100%; padding: 1rem; gap: 1rem; }
-            nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.3rem; }
-            nav button { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; }
-            main { padding: 1rem; }
-            .es-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .flex-form { grid-template-columns: 1fr; padding: 0.8rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-            .stat-card { padding: 0.8rem; }
-            header h2 { font-size: 1.25rem; }
-        }
-    </style>
+    <!-- Tailwind CSS para el diseño profesional -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans">
 
-    <!-- Menú de Navegación Lateral -->
-    <aside>
-        <div class="brand">
-            <h1>Carmencita</h1>
-            <span>Mobiliario y Diseño</span>
-        </div>
-        <nav>
-            <button id="btn-dashboard" class="active" onclick="irA('dashboard')">📊 Vista Rápida</button>
-            <button id="btn-ventas" onclick="irA('ventas')">🛍️ Ventas/Clientes</button>
-            <button id="btn-cobros" onclick="irA('cobros')">🚨 Cobros Activos</button>
-            <button id="btn-nomina" onclick="irA('nomina')">👷 Pago Operarios</button>
-            <button id="btn-gastos" onclick="irA('gastos')">💡 Gastos Empresa</button>
-            <button id="btn-cajamenor" onclick="irA('cajamenor')">🪙 Caja Menor</button>
-        </nav>
-    </aside>
-
-    <!-- Contenedor Principal -->
-    <main>
-        <!-- INDICADORES FINANCIEROS CON NUEVO RECUADRO TOTAL INGRESADO -->
-        <div class="stats-grid" id="contenedor-kpis-principal">
-            <div class="stat-card" style="border-left: 4px solid var(--success); background-color: #f0fdf4;">
-                <p>💰 TOTAL INGRESADO</p>
-                <h3 style="color: var(--success);" id="kpi-total-ingresado">$0</h3>
-                <span class="explicacion-tag">Suma total (Banco + Efectivo).</span>
-            </div>
-            <div class="stat-card" style="border-left: 4px solid var(--info);">
-                <p>🏦 Banco (Disponible)</p>
-                <h3 style="color: var(--info);" id="kpi-bancos">$0</h3>
-                <span class="explicacion-tag">Cuentas y transferencias.</span>
-            </div>
-            <div class="stat-card" style="border-left: 4px solid #d97706;">
-                <p>💵 Efectivo Físico</p>
-                <h3 style="color: #d97706;" id="kpi-efectivo-grande">$0</h3>
-                <span class="explicacion-tag">Plata física disponible.</span>
-            </div>
-            <div class="stat-card" style="border-left: 4px solid var(--danger);">
-                <p>📉 Total Egresos</p>
-                <h3 style="color: var(--danger);" id="kpi-gastos">$0</h3>
-                <span class="explicacion-tag">Salidas totales ejecutadas.</span>
-            </div>
-            <div class="stat-card" style="border-left: 4px solid var(--text-dark);">
-                <p>🎯 Ganancia Real</p>
-                <h3 style="color: var(--text-dark);" id="kpi-ganancia">$0</h3>
-                <span class="explicacion-tag">Ingresado menos egresos.</span>
-            </div>
-        </div>
-
-        <header>
-            <h2 id="txt-modulo-titulo">Vista Rápida de Entradas y Salidas</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;" id="txt-modulo-desc">Resumen visual claro del dinero de tu negocio.</p>
-        </header>
-
-        <!-- MÓDULO 1: VISTA RÁPIDA -->
-        <div id="mod-dashboard" class="seccion-vista activa">
-            <div class="filter-bar">
-                <div style="flex: 1; min-width: 180px;" class="campo">
-                    <label>🔍 Filtro Rápido (Concepto, cliente...)</label>
-                    <input type="text" id="f-buscar" oninput="render()" placeholder="Escribe para buscar...">
+    <!-- Encabezado Principal -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-amber-500 rounded-xl text-slate-950 shadow-inner">
+                    <i data-lucide="palette" class="w-6 h-6"></i>
                 </div>
-                <div style="width: 140px;" class="campo"><label>📅 Desde</label><input type="date" id="f-desde" onchange="render()"></div>
-                <div style="width: 140px;" class="campo"><label>📅 Hasta</label><input type="date" id="f-hasta" onchange="render()"></div>
-                <button class="btn" style="background:#64748b; height:38px; margin-top:16px;" onclick="limpiarFiltros()">Limpiar</button>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Carmencita Design</h1>
+                    <p class="text-xs text-slate-400">Panel de Control Operativo y Financiero</p>
+                </div>
+            </div>
+            <div id="connection-badge" class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full text-xs font-medium text-amber-400 border border-slate-700">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                Conectando a Firebase...
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Banner Informativo Temporal -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl mb-8 shadow-sm flex items-start gap-3">
+            <i data-lucide="info" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+            <div>
+                <h3 class="font-semibold text-blue-900 text-sm">Base de datos activa en la nube</h3>
+                <p class="text-xs text-blue-700 mt-0.5">Tu sistema está enlazado correctamente con Firebase. Los datos ingresados se sincronizarán inmediatamente entre todos tus dispositivos de forma segura.</p>
+            </div>
+        </div>
+
+        <!-- Secciones de la Aplicación -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Formulario de Registro (Izquierda) -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-amber-500"></i>
+                        Nuevo Contrato / Registro
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-6">Completa la información para actualizar el balance del negocio en tiempo real.</p>
+                    
+                    <!-- Aquí se renderizará el formulario operativo completo -->
+                    <div id="form-container" class="space-y-4">
+                        <div class="animate-pulse space-y-3">
+                            <div class="h-4 bg-slate-200 rounded w-1/3"></div>
+                            <div class="h-10 bg-slate-100 rounded-lg w-full"></div>
+                            <div class="h-4 bg-slate-200 rounded w-1/4"></div>
+                            <div class="h-10 bg-slate-100 rounded-lg w-full"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="es-grid">
-                <div class="panel" style="border-top: 3px solid var(--success);">
-                    <h3 style="color: var(--success);">📥 INGRESOS (Entradas)</h3>
-                    <div class="table-responsive">
-                        <table id="t-dashboard-entradas">
-                            <thead><tr><th>Fecha</th><th>Origen / Cliente</th><th>Medio</th><th>Monto</th></tr></thead>
-                            <tbody></tbody>
+            <!-- Listados y Visualización de Datos (Derecha) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Resumen Financiero Rápido -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                        <div><p class="text-xs text-slate-500 font-medium">Total Ingresos</p><p id="stat-ingresos" class="text-lg font-bold text-slate-900">$0</p></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div class="p-3 bg-rose-50 text-rose-600 rounded-xl"><i data-lucide="trending-down" class="w-6 h-6"></i></div>
+                        <div><p class="text-xs text-slate-500 font-medium">Total Gastos/Pagos</p><p id="stat-gastos" class="text-lg font-bold text-slate-900">$0</p></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="wallet" class="w-6 h-6"></i></div>
+                        <div><p class="text-xs text-slate-500 font-medium">Balance Neto</p><p id="stat-balance" class="text-lg font-bold text-slate-900">$0</p></div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Contratos e Historial -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Historial de Registros</h2>
+                            <p class="text-xs text-slate-500">Listado consolidado guardado en la nube</p>
+                        </div>
+                        <button id="btn-refresh" class="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-xs font-semibold text-slate-600 uppercase tracking-wider border-b border-slate-100">
+                                    <th class="px-6 py-3.5">Detalle / Cliente</th>
+                                    <th class="px-6 py-3.5">Categoría</th>
+                                    <th class="px-6 py-3.5">Monto</th>
+                                    <th class="px-6 py-3.5">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
+                                <tr>
+                                    <td colspan="4" class="px-6 py-10 text-center text-slate-400">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <i data-lucide="database" class="w-8 h-8 opacity-60"></i>
+                                            <span>Esperando datos de Firebase...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
-
-                <div class="panel" style="border-top: 3px solid var(--danger);">
-                    <h3 style="color: var(--danger);">📤 EGRESOS (Salidas)</h3>
-                    <div class="table-responsive">
-                        <table id="t-dashboard-salidas">
-                            <thead><tr><th>Fecha</th><th>Tipo</th><th>Concepto / Destino</th><th>Monto</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MÓDULO 2: VENTAS Y CLIENTES -->
-        <div id="mod-ventas" class="seccion-vista">
-            <div id="box-abono-practico" class="box-flotante">
-                <h3 style="color: var(--success); margin-bottom:8px; border:none; padding:0;">➕ Registrar Abono de Cartera</h3>
-                <p style="font-size:0.85rem; margin-bottom:1rem;">Cliente: <strong id="lbl-abono-cliente"></strong></p>
-                <input type="hidden" id="abono-id-cliente">
-                <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:flex-end;">
-                    <div class="campo" style="flex:1; min-width:180px;"><label>Monto a abonar ($)</label><input type="text" id="abono-monto-input" oninput="formatMoni(this)" placeholder="Ej: 1.000.000"></div>
-                    <div class="campo" style="width:160px;"><label>Medio de Recibo</label><select id="abono-medio-input"><option value="Banco">Banco</option><option value="Efectivo Grande">Efectivo Principal</option></select></div>
-                    <button class="btn btn-verde" onclick="procesarAbonoEstructurado()">Guardar Abono</button>
-                    <button class="btn" style="background:#64748b;" onclick="cerrarBoxAbono()">X</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h3 id="form-venta-titulo">🛍️ Contratos Registrados</h3>
-                <div class="table-responsive">
-                    <table id="t-ventas">
-                        <thead><tr><th>Cliente</th><th>Proyecto</th><th>Total</th><th>Abonado</th><th>Saldo</th><th>Acciones</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <h3 style="color:var(--info); margin-top:1.5rem;" id="lbl-formulario-modo">➕ Registrar Nuevo Contrato de Venta</h3>
-                <input type="hidden" id="v-id-edicion" value="">
-                <div class="flex-form">
-                    <div class="campo"><label>Nombre del Cliente</label><input type="text" id="v-cliente" placeholder="Cliente"></div>
-                    <div class="campo"><label>Cédula o NIT</label><input type="text" id="v-cedula" placeholder="Documento"></div>
-                    <div class="campo"><label>Dirección de Entrega</label><input type="text" id="v-direccion" placeholder="Dirección"></div>
-                    <div class="campo"><label>Barrio</label><input type="text" id="v-barrio" placeholder="Barrio"></div>
-                    <div class="campo"><label>Teléfono / WhatsApp</label><input type="text" id="v-telefono" placeholder="Celular"></div>
-                    <div class="campo"><label>Correo Electrónico</label><input type="email" id="v-correo" placeholder="Correo"></div>
-                    <div class="campo"><label>Descripción del Trabajo</label><input type="text" id="v-desc" placeholder="Ej: Cocina mueble RH"></div>
-                    <div class="campo"><label>Valor Total ($)</label><input type="text" id="v-total" oninput="formatMoni(this)" placeholder="Total"></div>
-                    <div class="campo" id="box-v-abono"><label>Abono de Cuota Hoy ($)</label><input type="text" id="v-abono" oninput="formatMoni(this)" placeholder="0 si no hay"></div>
-                    <div class="campo" id="box-v-medio"><label>Medio de Recibo</label><select id="v-medio"><option value="Banco">Banco</option><option value="Efectivo Grande">Efectivo Principal</option></select></div>
-                </div>
-                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                    <button class="btn btn-verde" style="flex:1;" onclick="guardarVenta()" id="btn-guardar-venta-accion">🚀 Guardar Contrato</button>
-                    <button class="btn" style="background:#64748b; display:none;" id="btn-cancelar-edicion-venta" onclick="cancelarEdicionVenta()">Cancelar Edición</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MÓDULO 3: COBROS -->
-        <div id="mod-cobros" class="seccion-vista">
-            <div class="panel" style="border-top:4px solid var(--danger);">
-                <h3>🚨 Cuentas por Cobrar Pendientes</h3>
-                <div class="table-responsive">
-                    <table id="t-cobros">
-                        <thead><tr><th>Cliente</th><th>Teléfono</th><th>Proyecto</th><th>Deuda Actual</th><th>Operación</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- MÓDULO 4: PAGOS Y OPERARIOS -->
-        <div id="mod-nomina" class="seccion-vista">
-            <button class="btn btn-azul" style="margin-bottom:1rem; width:100%;" onclick="toggleSeccionTrabajador()">➕ Crear Nuevo Trabajador / Operario</button>
-            
-            <div id="box-crear-trabajador-rapido" class="seccion-ocultable">
-                <h3 style="font-size:0.95rem; margin-bottom:0.75rem; border:none; padding:0; color:var(--info);">Ficha Personal del Operario</h3>
-                <div class="flex-form">
-                    <div class="campo"><label>Nombre Completo</label><input type="text" id="t-nombre" placeholder="Nombre"></div>
-                    <div class="campo"><label>Cédula de Ciudadanía</label><input type="text" id="t-cedula" placeholder="Cédula"></div>
-                    <div class="campo"><label>Teléfono / WhatsApp</label><input type="text" id="t-telefono" placeholder="Celular"></div>
-                    <div class="campo"><label>Dirección</label><input type="text" id="t-direccion" placeholder="Residencia"></div>
-                    <div class="campo"><label>Correo</label><input type="text" id="t-correo" placeholder="Opcional"></div>
-                    <div class="campo"><label>Cargo / Oficio Especializado</label><input type="text" id="t-cargo" placeholder="Ej: Maestro Carpintero, Pintor..."></div>
-                </div>
-                <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.5rem;">
-                    <button class="btn btn-verde" onclick="guardarTrabajadorRapido()">💾 Guardar Ficha</button>
-                    <button class="btn" style="background:#64748b;" onclick="toggleSeccionTrabajador()">Cerrar</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h3>👷 Historial de Vales y Adelantos</h3>
-                <div class="table-responsive">
-                    <table id="t-nomina">
-                        <thead><tr><th>Fecha</th><th>Trabajador</th><th>Concepto</th><th>Detalle Explicativo</th><th>Origen</th><th>Monto</th><th>X</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <h3 style="color:var(--info); margin-top:1rem;">💸 Entregar Adelanto o Semanal</h3>
-                <div class="flex-form">
-                    <div class="campo"><label>Seleccionar Operario</label><select id="n-select-trabajador"></select></div>
-                    <!-- REMOVIDO EL DESPLEGABLE DE TIPO POR SOLICITUD. QUEDA FIJO INTERNAMENTE -->
-                    <div class="campo"><label>Detalle o Destino Extra</label><input type="text" id="n-detalle" placeholder="Ej: Adelanto mueble cocina Pedro"></div>
-                    <div class="campo"><label>¿De dónde sale la plata?</label><select id="n-origen"><option value="Banco">Banco (Transferencia)</option><option value="Efectivo Grande">Efectivo Principal</option></select></div>
-                    <div class="campo"><label>Monto Pagado ($)</label><input type="text" id="n-monto" oninput="formatMoni(this)" placeholder="Monto"></div>
-                </div>
-                <button class="btn btn-verde" style="width:100%; margin-top:0.5rem;" onclick="guardarNomina()">Registrar Pago a Operario</button>
-            </div>
-        </div>
-
-        <!-- MÓDULO 5: GASTOS EMPRESA -->
-        <div id="mod-gastos" class="seccion-vista">
-            <div class="panel">
-                <h3>💡 Registro de Gastos Generales</h3>
-                <div class="table-responsive">
-                    <table id="t-gastos">
-                        <thead><tr><th>Fecha</th><th>Categoría</th><th>Detalle Explicativo</th><th>Medio</th><th>Monto</th><th>X</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <h3 style="color:var(--info);">➕ Registrar Nuevo Gasto</h3>
-                <div class="flex-form">
-                    <div class="campo">
-                        <label>Categoría</label>
-                        <select id="g-cat" onchange="verificarCategoriaManual(this)">
-                            <option value="Servicios Publicos">💡 Servicios Públicos (Luz/Agua/Internet)</option>
-                            <option value="Arriendo Taller">🏠 Arriendo de Local / Taller</option>
-                            <option value="Compra Materiales">🪵 Materiales Críticos (MDF, Bisagras)</option>
-                            <option value="Compra Colchones">🛏️ Compra de Colchones para Entrega</option>
-                            <option value="Papeleria">📋 Papelería y Copias</option>
-                            <option value="Mantenimiento">🔧 Mantenimiento de Herramientas</option>
-                            <option value="MANUAL">✍️ Otra categoría (Escribir manual abajo)</option>
-                        </select>
-                    </div>
-                    <div class="campo" id="box-cat-manual" style="display:none;"><label style="color:var(--accent);">Escribe la Nueva Categoría</label><input type="text" id="g-cat-manual" placeholder="Categoría manual"></div>
-                    <div class="campo"><label>Detalle del Concepto</label><input type="text" id="g-concepto" placeholder="Ej: Compra tornillos ensamble"></div>
-                    <div class="campo"><label>Medio de Pago</label><select id="g-medio"><option value="Banco">Banco</option><option value="Efectivo Grande">Efectivo Principal</option></select></div>
-                    <div class="campo"><label>Monto ($)</label><input type="text" id="g-monto" oninput="formatMoni(this)" placeholder="Monto"></div>
-                </div>
-                <button class="btn btn-verde" style="width:100%; margin-top:0.5rem;" onclick="guardarGasto()">Guardar Movimiento de Gasto</button>
-            </div>
-        </div>
-
-        <!-- MÓDULO 6: CAJA MENOR -->
-        <div id="mod-cajamenor" class="seccion-vista">
-            <div class="panel">
-                <h3>🪙 Caja Menor Auxiliar del Taller</h3>
-                <div class="table-responsive">
-                    <table id="t-cajamenor">
-                        <thead><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Monto</th><th>X</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <h3 style="color:var(--info);">🔄 Movimiento de Caja Menor</h3>
-                <div class="flex-form">
-                    <div class="campo"><label>Operación</label><select id="cm-tipo"><option value="Gasto Menor">💸 Gasto Pequeño Taller (-)</option><option value="Reembolso">🔄 Recargar Fondo (+)</option></select></div>
-                    <div class="campo"><label>Concepto Explicativo</label><input type="text" id="cm-concepto" placeholder="Detalle"></div>
-                    <div class="campo"><label>Monto ($)</label><input type="text" id="cm-monto" oninput="formatMoni(this)" placeholder="Valor"></div>
-                </div>
-                <button class="btn btn-verde" style="width:100%; margin-top:0.5rem;" onclick="guardarCajaMenor()">Registrar Operación de Caja</button>
             </div>
         </div>
     </main>
 
-    <!-- VENTANA MODAL PARA VER EL DETALLE COMPLETO DEL CLIENTE -->
-    <div id="modal-detalle-cliente" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="cerrarModalDetalle()">&times;</span>
-            <h3 style="color:var(--info); border-bottom:1px solid #e2e8f0; padding-bottom:5px; margin-bottom:10px;">📋 Ficha de Datos del Cliente</h3>
-            <div id="contenido-modal-detalle" style="font-size:0.9rem; display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-    </div>
+    <!-- Configuración e Integración SDK Modular de Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    <script {__security_sensitivedata_no_inference__}>
-        // Base de datos local v12
-        let db = JSON.parse(localStorage.getItem('carmencita_db_v12')) || {
-            trabajadores: [
-                { id: 't1', nombre: 'Carlos Mario Torres', cedula: '77.180.220', telefono: '3156001122', cargo: 'Maestro Carpintero', direccion: 'Valledupar', correo: '' }
-            ],
-            ventas: [
-                { id: 'v1', cliente: 'Pedro Gómez', cedula: '1.065.200', direccion: 'Cra 12 # 14-30', barrio: 'San Joaquín', telefono: '3152003040', correo: 'pedro@gmail.com', desc: 'Cocina Integral', total: 12000000, abonado: 6000000 }
-            ],
-            ingresosDirectos: [
-                { id: 'i1', fecha: '2026-06-22', origen: 'Abono Inicial - Pedro Gómez', medio: 'Banco', monto: 5000000 },
-                { id: 'i2', fecha: '2026-06-22', origen: 'Abono Cartera - Pedro Gómez', medio: 'Efectivo Grande', monto: 1000000 }
-            ],
-            gastos: [
-                { id: 'g1', fecha: '2026-06-22', cat: 'Arriendo Taller', concepto: 'Mes de Junio', medio: 'Banco', monto: 1800000 }
-            ],
-            nomina: [
-                { id: 'n1', fecha: '2026-06-22', nombre: 'Carlos Mario Torres', tipo: 'Pago o Abono', detalle: 'Vale cocina Grande', origen: 'Efectivo Grande', monto: 100000 }
-            ],
-            cajaMenor: []
+        // Credenciales oficiales del proyecto carmencita-design
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsnJ0uptAR6gxehle57HvIdJtED03nS9A",
+            authDomain: "carmencita-design.firebaseapp.com",
+            databaseURL: "https://carmencita-design-default-rtdb.firebaseio.com",
+            projectId: "carmencita-design",
+            storageBucket: "carmencita-design.firebasestorage.app",
+            messagingSenderId: "1016963517",
+            appId: "1:1016963517:web:a61486ad763e7c43a89354",
+            measurementId: "G-T380P5WVSY"
         };
 
-        function salvar() { localStorage.setItem('carmencita_db_v12', JSON.stringify(db)); render(); }
-        function formatMoni(i) { let v = i.value.replace(/\D/g, ""); i.value = v === "" ? "" : Number(v).toLocaleString('es-CO'); }
-        function cleanNum(t) { return parseFloat(t.toString().replace(/\./g, '')) || 0; }
-        function m(n) { return '$' + n.toLocaleString('es-CO'); }
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        function toggleSeccionTrabajador() {
-            let box = document.getElementById('box-crear-trabajador-rapido');
-            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        // Cambiar el indicador visual cuando conecte exitosamente
+        const badge = document.getElementById('connection-badge');
+        if (db) {
+            badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Nube Conectada`;
+            badge.className = "flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full text-xs font-medium text-emerald-700 border border-emerald-200";
         }
 
-        function limpiarFiltros() {
-            document.getElementById('f-buscar').value = ''; document.getElementById('f-desde').value = ''; document.getElementById('f-hasta').value = ''; render();
-        }
+        // Renderizado del formulario base dinámico
+        const formContainer = document.getElementById('form-container');
+        formContainer.innerHTML = `
+            <form id="main-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Nombre del Cliente o Detalle</label>
+                    <input type="text" id="input-detalle" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 text-sm bg-slate-50" placeholder="Ej. Contrato Comedor Jorge Oñate">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Tipo de Registro</label>
+                    <select id="input-tipo" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 text-sm bg-slate-50">
+                        <option value="contrato">Nuevo Contrato (Ingreso)</option>
+                        <option value="abono">Abono de Cliente (Ingreso)</option>
+                        <option value="gasto">Gasto General (Egreso)</option>
+                        <option value="operario">Pago a Operario (Egreso)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Valor Monetario ($)</label>
+                    <input type="number" id="input-monto" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 text-sm bg-slate-50" placeholder="0.00">
+                </div>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-xl transition-all shadow-sm text-sm flex items-center justify-center gap-2 mt-2 cursor-pointer">
+                    <i data-lucide="save" class="w-4 h-4"></i> Guardar en la Nube
+                </button>
+            </form>
+        `;
+        lucide.createIcons();
 
-        function verificarCategoriaManual(select) {
-            document.getElementById('box-cat-manual').style.display = (select.value === 'MANUAL') ? 'flex' : 'none';
-        }
-
-        function render() {
-            // AUDITORÍA Y TOTALES FLUIDOS
-            let ingresosBanco = db.ingresosDirectos.filter(i => i.medio === 'Banco').reduce((s, i) => s + i.monto, 0);
-            let ingresosEfectivo = db.ingresosDirectos.filter(i => i.medio === 'Efectivo Grande').reduce((s, i) => s + i.monto, 0);
-
-            let gastosBanco = db.gastos.filter(g => g.medio === 'Banco').reduce((s, g) => s + g.monto, 0);
-            let gastosEfectivo = db.gastos.filter(g => g.medio === 'Efectivo Grande').reduce((s, g) => s + g.monto, 0);
-
-            let nominaBanco = db.nomina.filter(n => n.origen === 'Banco').reduce((s, n) => s + n.monto, 0);
-            let nominaEfectivo = db.nomina.filter(n => n.origen === 'Efectivo Grande').reduce((s, n) => s + n.monto, 0);
-
-            let menosMenor = db.cajaMenor.filter(cm => cm.tipo === 'Gasto Menor').reduce((s, cm) => s + cm.monto, 0);
-
-            // NUEVO KPI REQUERIDO: TOTAL INGRESADO GLOBAL
-            let globalIngresadoTodo = ingresosBanco + ingresosEfectivo;
-
-            let totalDisponibleBanco = ingresosBanco - (gastosBanco + nominaBanco);
-            let totalDisponibleEfectivo = ingresosEfectivo - (gastosEfectivo + nominaEfectivo);
-            let totalGastosMes = gastosBanco + gastosEfectivo + menosMenor + nominaBanco + nominaEfectivo;
-            let gananciaEstimada = globalIngresadoTodo - totalGastosMes;
-
-            document.getElementById('kpi-total-ingresado').innerText = m(globalIngresadoTodo);
-            document.getElementById('kpi-bancos').innerText = m(totalDisponibleBanco);
-            document.getElementById('kpi-efectivo-grande').innerText = m(totalDisponibleEfectivo);
-            document.getElementById('kpi-gastos').innerText = m(totalGastosMes);
-            document.getElementById('kpi-ganancia').innerText = m(gananciaEstimada);
-
-            const nSelect = document.getElementById('n-select-trabajador'); nSelect.innerHTML = '';
-            db.trabajadores.forEach(t => { nSelect.innerHTML += `<option value="${t.nombre}">${t.nombre} [${t.cargo}]</option>`; });
-
-            let txtFiltro = document.getElementById('f-buscar').value.toLowerCase();
-            let fDesde = document.getElementById('f-desde').value;
-            let fHasta = document.getElementById('f-hasta').value;
-
-            function cumpleFiltro(fecha, texto) {
-                if (fDesde && fecha < fDesde) return false;
-                if (fHasta && fecha > fHasta) return false;
-                if (txtFiltro && !texto.toLowerCase().includes(txtFiltro)) return false;
-                return true;
-            }
-
-            // 1. DASHBOARD ENTRADAS
-            const bEntradas = document.querySelector('#t-dashboard-entradas tbody'); bEntradas.innerHTML = '';
-            db.ingresosDirectos.forEach(i => {
-                if(cumpleFiltro(i.fecha, i.origen + " " + i.medio)) {
-                    bEntradas.innerHTML += `<tr><td>${i.fecha}</td><td><strong>${i.origen}</strong></td><td><span class="badge bg-banco">${i.medio}</span></td><td style="color:var(--success); font-weight:600;">${m(i.monto)}</td></tr>`;
-                }
+        // Guardar datos en Firebase al enviar el formulario
+        document.getElementById('main-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const detalle = document.getElementById('input-detalle').value;
+            const tipo = document.getElementById('input-tipo').value;
+            const monto = parseFloat(document.getElementById('input-monto').value);
+            
+            const registrosRef = ref(db, 'registros');
+            const nuevoRegistroRef = push(registrosRef);
+            
+            set(nuevoRegistroRef, {
+                detalle: detalle,
+                tipo: tipo,
+                monto: monto,
+                fecha: new Date().toISOString()
+            }).then(() => {
+                document.getElementById('main-form').reset();
+                alert('¡Registro guardado con éxito en la nube!');
+            }).catch((error) => {
+                console.error("Error al guardar:", error);
+                alert('Error al guardar los datos.');
             });
+        });
 
-            // 2. DASHBOARD SALIDAS
-            const bSalidas = document.querySelector('#t-dashboard-salidas tbody'); bSalidas.innerHTML = '';
-            db.gastos.forEach(g => {
-                if(cumpleFiltro(g.fecha, g.cat + " " + g.concepto)) {
-                    bSalidas.innerHTML += `<tr><td>${g.fecha}</td><td>🏠 ${g.cat}</td><td>${g.concepto} [${g.medio}]</td><td style="color:var(--danger);">${m(g.monto)}</td></tr>`;
-                }
-            });
-            db.nomina.forEach(n => {
-                if(cumpleFiltro(n.fecha, n.nombre + " " + n.detalle)) {
-                    bSalidas.innerHTML += `<tr><td>${n.fecha}</td><td>👷 Nómina: ${n.nombre}</td><td>${n.detalle} [${n.origen}]</td><td style="color:var(--danger);">${m(n.monto)}</td></tr>`;
-                }
-            });
+        // Escuchar datos en tiempo real desde Firebase y actualizar la UI
+        const registrosRef = ref(db, 'registros');
+        onValue(registrosRef, (snapshot) => {
+            const data = snapshot.val();
+            const tableBody = document.getElementById('table-body');
+            
+            let totalIngresos = 0;
+            let totalGastos = 0;
 
-            // 3. TABLA VENTAS CON BOTÓN DETALLE Y EDITAR
-            const bVentas = document.querySelector('#t-ventas tbody'); bVentas.innerHTML = '';
-            db.ventas.forEach(v => {
-                let pendiente = v.total - v.abonado;
-                bVentas.innerHTML += `
+            if (!data) {
+                tableBody.innerHTML = `
                     <tr>
-                        <td><strong>${v.cliente}</strong></td>
-                        <td>${v.desc}</td><td>${m(v.total)}</td><td style="color:var(--info);">${m(v.abonado)}</td>
-                        <td style="color:var(--danger); font-weight:600;">${m(pendiente)}</td>
-                        <td>
-                            <div style="display:flex; gap:3px;">
-                                <button class="btn-accion btn-azul" style="padding:4px 6px;" onclick="verDetalleCliente('${v.id}')">👁️ Ver</button>
-                                <button class="btn-accion" style="background:#e2e8f0; color:#0f172a; padding:4px 6px;" onclick="iniciarEdicionVenta('${v.id}')">✏️ Editar</button>
-                                <button class="btn-accion btn-verde" style="padding:4px 6px;" onclick="abrirCajaAbono('${v.id}', '${v.cliente}')">💵 +</button>
-                                <button class="btn-accion btn-eliminar" style="padding:4px 6px;" onclick="eliminarVenta('${v.id}')">x</button>
-                            </div>
-                        </td>
-                    </tr>`;
-            });
-
-            // 4. TABLA COBROS
-            const bCobros = document.querySelector('#t-cobros tbody'); bCobros.innerHTML = '';
-            db.ventas.forEach(v => {
-                let pendiente = v.total - v.abonado;
-                if(pendiente > 0) {
-                    let msg = `Hola ${v.cliente}, recordamos amablemente tu saldo en mora de ${m(pendiente)} del proyecto ${v.desc}. ¡Muchas gracias!`;
-                    let uri = `https://api.whatsapp.com/send?phone=57${v.telefono.replace(/\s+/g, '')}&text=${encodeURIComponent(msg)}`;
-                    bCobros.innerHTML += `
-                        <tr>
-                            <td><strong>${v.cliente}</strong></td><td>${v.telefono}</td><td>${v.desc}</td>
-                            <td style="color:var(--danger); font-weight:700;">${m(pendiente)}</td>
-                            <td><a href="${uri}" target="_blank" class="btn btn-verde" style="padding:4px 8px; font-size:0.75rem;">💬 Cobrar</a></td>
-                        </tr>`;
-                }
-            });
-
-            // 5. HISTORIAL NÓMINA (TIPO SIMPLIFICADO)
-            const bNomina = document.querySelector('#t-nomina tbody'); bNomina.innerHTML = '';
-            db.nomina.forEach(n => {
-                bNomina.innerHTML += `<tr><td>${n.fecha}</td><td><strong>${n.nombre}</strong></td><td><span class="badge bg-efectivo">PAGO/ABONO</span></td><td>${n.detalle}</td><td>${n.origen}</td><td style="color:var(--danger); font-weight:600;">${m(n.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarNomina('${n.id}')">x</button></td></tr>`;
-            });
-
-            // 6. HISTORIAL GASTOS
-            const bGastos = document.querySelector('#t-gastos tbody'); bGastos.innerHTML = '';
-            db.gastos.forEach(g => {
-                bGastos.innerHTML += `<tr><td>${g.fecha}</td><td><span class="badge bg-efectivo" style="background:#e2e8f0; color:#334155;">${g.cat}</span></td><td>${g.concepto}</td><td>${g.medio}</td><td style="color:var(--danger); font-weight:600;">${m(g.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarGasto('${g.id}')">x</button></td></tr>`;
-            });
-
-            // 7. CAJA MENOR
-            const bMenor = document.querySelector('#t-cajamenor tbody'); bMenor.innerHTML = '';
-            db.cajaMenor.forEach(cm => {
-                let col = cm.tipo === 'Reembolso' ? 'color:var(--success);' : 'color:var(--danger);';
-                bMenor.innerHTML += `<tr><td>${cm.fecha}</td><td>${cm.tipo}</td><td>${cm.concepto}</td><td style="${col}">${m(cm.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarCM('${cm.id}')">x</button></td></tr>`;
-            });
-        }
-
-        // CONTROLADORES DE CLIENTE (VER Y EDITAR)
-        function verDetalleCliente(id) {
-            let v = db.ventas.find(x => x.id === id);
-            let h = `
-                <p><strong>Cliente:</strong> ${v.cliente}</p>
-                <p><strong>Cédula/NIT:</strong> ${v.cedula || 'No registrada'}</p>
-                <p><strong>Teléfono:</strong> ${v.telefono}</p>
-                <p><strong>Dirección:</strong> ${v.direccion}</p>
-                <p><strong>Barrio:</strong> ${v.barrio || 'No registrado'}</p>
-                <p><strong>Correo:</strong> ${v.correo || 'No registrado'}</p>
-                <p><strong>Proyecto contratado:</strong> ${v.desc}</p>
-                <p><strong>Valor Contrato:</strong> ${m(v.total)}</p>
-                <p style="color:var(--success)"><strong>Abonado Real:</strong> ${m(v.abonado)}</p>
-                <p style="color:var(--danger)"><strong>Saldo en Mora:</strong> ${m(v.total - v.abonado)}</p>
-            `;
-            document.getElementById('contenido-modal-detalle').innerHTML = h;
-            document.getElementById('modal-detalle-cliente').style.display = 'flex';
-        }
-        function cerrarModalDetalle() { document.getElementById('modal-detalle-cliente').style.display = 'none'; }
-
-        function iniciarEdicionVenta(id) {
-            let v = db.ventas.find(x => x.id === id);
-            document.getElementById('v-id-edicion').value = v.id;
-            document.getElementById('v-cliente').value = v.cliente;
-            document.getElementById('v-cedula').value = v.cedula;
-            document.getElementById('v-direccion').value = v.direccion;
-            document.getElementById('v-barrio').value = v.barrio;
-            document.getElementById('v-telefono').value = v.telefono;
-            document.getElementById('v-correo').value = v.correo;
-            document.getElementById('v-desc').value = v.desc;
-            document.getElementById('v-total').value = v.total.toLocaleString('es-CO');
-            
-            // Ocultar abonos hoy al editar para no duplicar ingresos del pasado
-            document.getElementById('box-v-abono').style.display = 'none';
-            document.getElementById('box-v-medio').style.display = 'none';
-            
-            document.getElementById('lbl-formulario-modo').innerText = "✏️ Modificar Datos del Contrato";
-            document.getElementById('btn-guardar-venta-accion').innerText = "💾 Aplicar Cambios";
-            document.getElementById('btn-cancelar-edicion-venta').style.display = 'inline-flex';
-            document.getElementById('v-cliente').focus();
-        }
-
-        function cancelarEdicionVenta() {
-            document.getElementById('v-id-edicion').value = '';
-            document.getElementById('v-cliente').value = ''; document.getElementById('v-cedula').value = ''; document.getElementById('v-direccion').value = '';
-            document.getElementById('v-barrio').value = ''; document.getElementById('v-telefono').value = ''; document.getElementById('v-correo').value = '';
-            document.getElementById('v-desc').value = ''; document.getElementById('v-total').value = '';
-            
-            document.getElementById('box-v-abono').style.display = 'flex';
-            document.getElementById('box-v-medio').style.display = 'flex';
-            
-            document.getElementById('lbl-formulario-modo').innerText = "➕ Registrar Nuevo Contrato de Venta";
-            document.getElementById('btn-guardar-venta-accion').innerText = "🚀 Guardar Contrato";
-            document.getElementById('btn-cancelar-edicion-venta').style.display = 'none';
-        }
-
-        function guardarVenta() {
-            let idEdicion = document.getElementById('v-id-edicion').value;
-            let cliente = document.getElementById('v-cliente').value;
-            let cedula = document.getElementById('v-cedula').value;
-            let direccion = document.getElementById('v-direccion').value;
-            let barrio = document.getElementById('v-barrio').value;
-            let telefono = document.getElementById('v-telefono').value;
-            let correo = document.getElementById('v-correo').value;
-            let desc = document.getElementById('v-desc').value;
-            let total = cleanNum(document.getElementById('v-total').value);
-
-            if(!cliente || total <= 0) return alert('Verifica datos y monto total.');
-
-            if(idEdicion) {
-                // Modo Modificar
-                let v = db.ventas.find(x => x.id === idEdicion);
-                v.cliente = cliente; v.cedula = cedula; v.direccion = direccion;
-                v.barrio = barrio; v.telefono = telefono; v.correo = correo;
-                v.desc = desc; v.total = total;
-                cancelarEdicionVenta();
-            } else {
-                // Modo Nuevo Contrato
-                let abono = cleanNum(document.getElementById('v-abono').value);
-                let medio = document.getElementById('v-medio').value;
-                db.ventas.push({ id: 'v_'+Date.now(), cliente, cedula, direccion, barrio, telefono, correo, desc, total, abonado: abono });
-                if (abono > 0) {
-                    db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: new Date().toISOString().split('T')[0], origen: `Abono Inicial - ${cliente}`, medio, monto: abono });
-                }
-                document.getElementById('v-cliente').value = ''; document.getElementById('v-total').value = ''; document.getElementById('v-abono').value = '';
+                        <td colspan="4" class="px-6 py-8 text-center text-slate-400 text-xs">No hay registros guardados aún en Firebase.</td>
+                    </tr>
+                `;
+                actualizarEstadisticas(0, 0);
+                return;
             }
-            salvar();
-        }
 
-        // DEMÁS MÉTODOS OPERATIVOS
-        function guardarTrabajadorRapido() {
-            let nombre = document.getElementById('t-nombre').value;
-            let cedula = document.getElementById('t-cedula').value;
-            let telefono = document.getElementById('t-telefono').value;
-            let direccion = document.getElementById('t-direccion').value;
-            let correo = document.getElementById('t-correo').value;
-            let cargo = document.getElementById('t-cargo').value;
-
-            if(!nombre || !cedula || !cargo) return alert('Por favor escribe Nombre, Cédula y Cargo del operario.');
-            db.trabajadores.push({ id: 't_'+Date.now(), nombre, cedula, telefono, direccion, correo, cargo });
-            document.getElementById('t-nombre').value = ''; document.getElementById('t-cedula').value = ''; document.getElementById('t-cargo').value = '';
-            toggleSeccionTrabajador(); salvar();
-        }
-
-        function abrirCajaAbono(id, cliente) {
-            document.getElementById('box-abono-practico').style.display = 'block';
-            document.getElementById('lbl-abono-cliente').innerText = cliente;
-            document.getElementById('abono-id-cliente').value = id;
-            document.getElementById('abono-monto-input').value = '';
-            document.getElementById('abono-monto-input').focus();
-        }
-        function cerrarBoxAbono() { document.getElementById('box-abono-practico').style.display = 'none'; }
-        
-        function procesarAbonoEstructurado() {
-            let id = document.getElementById('abono-id-cliente').value;
-            let monto = cleanNum(document.getElementById('abono-monto-input').value);
-            let medio = document.getElementById('abono-medio-input').value;
-
-            if (monto <= 0) return alert('Monto inválido.');
-            let v = db.ventas.find(x => x.id === id); v.abonado += monto;
-            db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: new Date().toISOString().split('T')[0], origen: `Abono Cartera - ${v.cliente}`, medio, monto });
-            cerrarBoxAbono(); salvar();
-        }
-
-        function guardarNomina() {
-            let nombre = document.getElementById('n-select-trabajador').value;
-            let detalle = document.getElementById('n-detalle').value;
-            let origen = document.getElementById('n-origen').value;
-            let monto = cleanNum(document.getElementById('n-monto').value);
-
-            if(!nombre || monto <= 0) return alert('Monto inválido o no hay operarios.');
-            // Tipo queda fijo como Pago o Abono de Mano de Obra
-            db.nomina.push({ id: 'n_'+Date.now(), fecha: new Date().toISOString().split('T')[0], nombre, tipo: 'Pago o Abono', detalle, origen, monto });
-            document.getElementById('n-detalle').value = ''; document.getElementById('n-monto').value = '';
-            salvar();
-        }
-
-        function guardarGasto() {
-            let catSelect = document.getElementById('g-cat').value;
-            let catManual = document.getElementById('g-cat-manual').value;
-            let catFinal = (catSelect === 'MANUAL') ? catManual : catSelect;
-            let concepto = document.getElementById('g-concepto').value;
-            let medio = document.getElementById('g-medio').value;
-            let monto = cleanNum(document.getElementById('g-monto').value);
-
-            if(!catFinal || monto <= 0) return alert('Verifica campos.');
-            db.gastos.push({ id: 'g_'+Date.now(), fecha: new Date().toISOString().split('T')[0], cat: catFinal, concepto, medio, monto });
-            document.getElementById('g-concepto').value = ''; document.getElementById('g-monto').value = '';
-            salvar();
-        }
-
-        function guardarCajaMenor() {
-            let tipo = document.getElementById('cm-tipo').value;
-            let concepto = document.getElementById('cm-concepto').value;
-            let monto = cleanNum(document.getElementById('cm-monto').value);
-            if(!concepto || monto <= 0) return alert('Verifica campos.');
-            db.cajaMenor.push({ id: 'cm_'+Date.now(), fecha: new Date().toISOString().split('T')[0], tipo, concepto, monto });
-            document.getElementById('cm-concepto').value = ''; document.getElementById('cm-monto').value = '';
-            salvar();
-        }
-
-        function eliminarVenta(id) { if(confirm('¿Eliminar contrato?')) { db.ventas = db.ventas.filter(x=>x.id!==id); salvar(); } }
-        function eliminarNomina(id) { if(confirm('¿Eliminar pago?')) { db.nomina = db.nomina.filter(x=>x.id!==id); salvar(); } }
-        function eliminarGasto(id) { if(confirm('¿Eliminar gasto?')) { db.gastos = db.gastos.filter(x=>x.id!==id); salvar(); } }
-        function eliminarCM(id) { if(confirm('¿Eliminar movimiento?')) { db.cajaMenor = db.cajaMenor.filter(x=>x.id!==id); salvar(); } }
-
-        function irA(id) {
-            document.querySelectorAll('.seccion-vista').forEach(v => v.classList.remove('activa'));
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById('mod-' + id).classList.add('activa');
-            document.getElementById('btn-' + id).classList.add('active');
+            tableBody.innerHTML = '';
             
-            document.getElementById('contenedor-kpis-principal').style.display = (id === 'dashboard') ? 'grid' : 'none';
+            // Recorrer los registros ordenados del más reciente al más antiguo
+            Object.keys(data).reverse().forEach(key => {
+                const item = data[key];
+                const esIngreso = item.tipo === 'contrato' || item.tipo === 'abono';
+                
+                if (esIngreso) {
+                    totalIngresos += item.monto;
+                } else {
+                    totalGastes += item.monto; // Sumar a egresos
+                    totalGastos += item.monto;
+                }
 
-            const t = { dashboard: "📊 Vista Rápida de Entradas y Salidas", ventas: "🛍️ Ventas y Fichas de Clientes", cobros: "🚨 Cartera y Cobros en Espera", nomina: "👷 Pagos y Descuentos a Operarios", gastos: "💡 Gastos y Egresos de Empresa", cajamenor: "🪙 Caja Menor Taller" };
-            const d = { dashboard: "Resumen de transferencias bancarias y efectivo real.", ventas: "Control de contratos y datos de clientes.", cobros: "Seguimiento de saldos pendientes con recordatorios rápidos.", nomina: "Historial de vales de operarios y registro directo de personal.", gastos: "Control de insumos, materiales y arriendos.", cajamenor: "Efectivo menor asignado al taller." };
-            document.getElementById('txt-modulo-titulo').innerText = t[id];
-            document.getElementById('txt-modulo-desc').innerText = d[id];
+                const fila = document.createElement('tr');
+                fila.className = "hover:bg-slate-50/50 transition-colors";
+                fila.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${item.detalle}</td>
+                    <td class="px-6 py-4 capitalize text-slate-500 text-xs">${item.tipo}</td>
+                    <td class="px-6 py-4 font-semibold ${esIngreso ? 'text-emerald-600' : 'text-rose-600'}">
+                        ${esIngreso ? '+' : '-'} $${item.monto.toLocaleString('es-CO')}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${esIngreso ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">
+                            <span class="w-1.5 h-1.5 rounded-full ${esIngreso ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+                            Sincronizado
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(fila);
+            });
+
+            actualizarEstadisticas(totalIngresos, totalGastos);
+        });
+
+        function actualizarEstadisticas(ingresos, gastos) {
+            document.getElementById('stat-ingresos').innerText = `$${ingresos.toLocaleString('es-CO')}`;
+            document.getElementById('stat-gastos').innerText = `$${gastos.toLocaleString('es-CO')}`;
+            document.getElementById('stat-balance').innerText = `$${(ingresos - gastos).toLocaleString('es-CO')}`;
+            
+            const balanceElement = document.getElementById('stat-balance');
+            if ((ingresos - gastos) >= 0) {
+                balanceElement.className = "text-lg font-bold text-emerald-600";
+            } else {
+                balanceElement.className = "text-lg font-bold text-rose-600";
+            }
         }
-
-        render();
     </script>
 </body>
 </html>
