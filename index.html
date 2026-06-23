@@ -21,9 +21,9 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-primary); color: var(--text-main); display: flex; min-height: 100vh; flex-direction: row; }
+        body { background-color: var(--bg-primary); color: var(--text-main); display: flex; min-height: 100vh; flex-direction: row; width: 100%; overflow-x: hidden; }
 
-        /* Estructura Base Adaptable */
+        /* Estructura Base Adaptable Sin Desbordamientos */
         aside { width: 260px; background-color: var(--bg-sidebar); color: var(--white); padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 2rem; shrink: 0; }
         .brand h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .brand span { color: #f59e0b; font-size: 0.8rem; display: block; font-weight: 300; }
@@ -32,34 +32,35 @@
         nav button { background: none; border: none; color: #94a3b8; text-align: left; padding: 0.8rem 1rem; font-size: 0.9rem; cursor: pointer; border-radius: 0.375rem; transition: all 0.2s; font-weight: 500; width: 100%; }
         nav button.active, nav button:hover { background-color: rgba(255, 255, 255, 0.08); color: var(--white); }
 
-        main { flex: 1; padding: 2rem; overflow-y: auto; width: 100%; }
-        header { margin-bottom: 1.5rem; }
+        /* Corrección de márgenes y ancho general */
+        main { flex: 1; padding: 2rem; overflow-y: auto; overflow-x: hidden; width: 100%; max-width: calc(100% - 260px); }
+        header { margin-bottom: 1.5rem; width: 100%; }
         header h2 { color: var(--text-dark); font-size: 1.5rem; font-weight: 700; }
 
-        /* Contenedor de Indicadores - Solución al Desbordamiento de Imagen {0367F7E1-7792-4E0F-B1BD-CD53ADE12C2A}.png */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; width: 100%; }
-        .stat-card { background-color: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        /* Contenedor de Indicadores Adaptable */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; width: 100%; }
+        .stat-card { background-color: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); width: 100%; }
         .stat-card p { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
         .stat-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-dark); word-break: break-all; }
         .explicacion-tag { font-size: 0.68rem; color: var(--text-muted); display: block; margin-top: 2px; line-height: 1.2; }
 
-        /* Filtros y Paneles */
-        .filter-bar { background: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
-        .es-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        /* Filtros y Paneles Flexibles */
+        .filter-bar { background: var(--white); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; width: 100%; }
+        .es-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; width: 100%; }
         
-        .seccion-vista { display: none; }
+        .seccion-vista { display: none; width: 100%; }
         .seccion-vista.activa { display: block; }
-        .panel { background-color: var(--white); border-radius: 0.5rem; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1.5rem; }
+        .panel { background-color: var(--white); border-radius: 0.5rem; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1.5rem; width: 100%; overflow: hidden; }
         .panel h3 { font-size: 1rem; margin-bottom: 1rem; font-weight: 700; color: var(--text-dark); border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
 
-        /* Tablas */
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 650px; }
+        /* Tablas Totalmente Responsivas */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; background: var(--white); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 700px; }
         th { background-color: #f8fafc; padding: 0.75rem; color: var(--text-dark); font-weight: 600; border-bottom: 2px solid var(--border); }
         td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; color: var(--text-main); vertical-align: middle; }
 
         /* Formularios */
-        .flex-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; background: #f8fafc; padding: 1.25rem; border-radius: 0.375rem; border: 1px dashed var(--border); margin-bottom: 1rem; }
+        .flex-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; background: #f8fafc; padding: 1.25rem; border-radius: 0.375rem; border: 1px dashed var(--border); margin-bottom: 1rem; width: 100%; }
         .campo { display: flex; flex-direction: column; gap: 4px; width: 100%; }
         .campo label { font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
         input, select, textarea { padding: 0.55rem 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem; font-size: 0.85rem; outline: none; background: var(--white); width: 100%; }
@@ -73,30 +74,32 @@
         .btn-accion { padding: 0.35rem 0.5rem; font-size: 0.75rem; border-radius: 0.25rem; border: none; cursor: pointer; font-weight: 600; }
         .btn-eliminar { background-color: #fee2e2; color: #991b1b; }
 
-        .badge { padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+        .badge { padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.7 rules; font-weight: 600; text-transform: uppercase; }
         .bg-efectivo { background-color: #fef3c7; color: #92400e; }
         .bg-banco { background-color: #e0f2fe; color: #0369a1; }
+        .badge-pendiente { background-color: #ffedd5; color: #c2410c; }
+        .badge-entregado { background-color: #dcfce7; color: #15803d; }
 
-        /* Ventanas Emergentes Modales */
+        /* Modales */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
         .modal-content { background: var(--white); padding: 1.5rem; border-radius: 0.5rem; width: 100%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 1.2rem; cursor: pointer; font-weight: 700; color: var(--text-muted); }
 
-        .box-flotante { display: none; background: #f0fdf4; border: 2px solid var(--success); padding: 1.25rem; margin-bottom: 1.5rem; border-radius: 0.5rem; }
-        .seccion-ocultable { display: none; background: #f8fafc; padding: 1rem; border: 1px solid var(--border); border-radius: 0.375rem; margin-bottom: 1.5rem; }
+        .box-flotante { display: none; background: #f0fdf4; border: 2px solid var(--success); padding: 1.25rem; margin-bottom: 1.5rem; border-radius: 0.5rem; width: 100%; }
+        .seccion-ocultable { display: none; background: #f8fafc; padding: 1rem; border: 1px solid var(--border); border-radius: 0.375rem; margin-bottom: 1.5rem; width: 100%; }
 
-        /* Estado de conexión Firebase */
+        /* Estado Firebase */
         .status-firebase { font-size: 0.75rem; color: #94a3b8; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); border-radius: 0.25rem; font-weight: 500; }
-        .dot { width: 8px; height: 8px; background: #e2e8f0; border-radius: 50%; display: inline-block; }
+        .dot { width: 8px; height: 8px; background: #e2e2e8f0; border-radius: 50%; display: inline-block; }
         .dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
 
-        /* Móviles (Máx 768px) */
+        /* Adaptabilidad en pantallas móviles y tablets */
         @media(max-width: 768px) {
             body { flex-direction: column; }
             aside { width: 100%; padding: 1rem; gap: 1rem; }
             nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.3rem; }
             nav button { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; }
-            main { padding: 1rem; }
+            main { padding: 1rem; width: 100%; max-width: 100%; }
             .es-grid { grid-template-columns: 1fr; gap: 1rem; }
             .flex-form { grid-template-columns: 1fr; padding: 0.8rem; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
@@ -116,6 +119,7 @@
         <nav>
             <button id="btn-dashboard" class="active" onclick="irA('dashboard')">📊 Vista Rápida</button>
             <button id="btn-ventas" onclick="irA('ventas')">🛍️ Ventas/Clientes</button>
+            <button id="btn-entregas" onclick="irA('entregas')">📦 Órdenes de Entrega</button>
             <button id="btn-cobros" onclick="irA('cobros')">🚨 Cobros Activos</button>
             <button id="btn-nomina" onclick="irA('nomina')">👷 Pago Operarios</button>
             <button id="btn-gastos" onclick="irA('gastos')">💡 Gastos Empresa</button>
@@ -129,7 +133,7 @@
 
     <!-- Contenedor Principal -->
     <main>
-        <!-- INDICADORES FINANCIEROS CON NUEVO RECUADRO TOTAL INGRESADO -->
+        <!-- INDICADORES FINANCIEROS -->
         <div class="stats-grid" id="contenedor-kpis-principal">
             <div class="stat-card" style="border-left: 4px solid var(--success); background-color: #f0fdf4;">
                 <p>💰 TOTAL INGRESADO</p>
@@ -163,18 +167,19 @@
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;" id="txt-modulo-desc">Resumen visual claro del dinero de tu negocio.</p>
         </header>
 
+        <!-- BARRA DE BÚSQUEDA COMPARTIDA ADAPTABLE -->
+        <div class="filter-bar" id="barra-busqueda-general">
+            <div style="flex: 1; min-width: 240px;" class="campo">
+                <label id="lbl-buscador-dinamico">🔍 Buscar en este módulo</label>
+                <input type="text" id="f-buscar" oninput="render()" placeholder="Escribe para filtrar la información de inmediato...">
+            </div>
+            <div id="div-filtro-desde" style="width: 140px;" class="campo"><label>📅 Desde</label><input type="date" id="f-desde" onchange="render()"></div>
+            <div id="div-filtro-hasta" style="width: 140px;" class="campo"><label>📅 Hasta</label><input type="date" id="f-hasta" onchange="render()"></div>
+            <button class="btn" style="background:#64748b; height:38px; margin-top:16px;" onclick="limpiarFiltros()">Limpiar Filtro</button>
+        </div>
+
         <!-- MÓDULO 1: VISTA RÁPIDA -->
         <div id="mod-dashboard" class="seccion-vista activa">
-            <div class="filter-bar">
-                <div style="flex: 1; min-width: 180px;" class="campo">
-                    <label>🔍 Filtro Rápido (Concepto, cliente...)</label>
-                    <input type="text" id="f-buscar" oninput="render()" placeholder="Escribe para buscar...">
-                </div>
-                <div style="width: 140px;" class="campo"><label>📅 Desde</label><input type="date" id="f-desde" onchange="render()"></div>
-                <div style="width: 140px;" class="campo"><label>📅 Hasta</label><input type="date" id="f-hasta" onchange="render()"></div>
-                <button class="btn" style="background:#64748b; height:38px; margin-top:16px;" onclick="limpiarFiltros()">Limpiar</button>
-            </div>
-
             <div class="es-grid">
                 <div class="panel" style="border-top: 3px solid var(--success);">
                     <h3 style="color: var(--success);">📥 INGRESOS (Entradas)</h3>
@@ -213,10 +218,10 @@
             </div>
 
             <div class="panel">
-                <h3 id="form-venta-titulo">🛍️ Contratos Registrados</h3>
+                <h3>🛍️ Contratos y Clientes Activos</h3>
                 <div class="table-responsive">
                     <table id="t-ventas">
-                        <thead><tr><th>Cliente</th><th>Proyecto</th><th>Total</th><th>Abonado</th><th>Saldo</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>F. Registro</th><th>Cliente</th><th>Proyecto</th><th>Total</th><th>Abonado</th><th>Saldo</th><th>Acciones</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -238,6 +243,19 @@
                 <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
                     <button class="btn btn-verde" style="flex:1;" onclick="guardarVenta()" id="btn-guardar-venta-accion">🚀 Guardar Contrato</button>
                     <button class="btn" style="background:#64748b; display:none;" id="btn-cancelar-edicion-venta" onclick="cancelarEdicionVenta()">Cancelar Edición</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÓDULO ÓRDENES DE ENTREGA -->
+        <div id="mod-entregas" class="seccion-vista">
+            <div class="panel" style="border-top: 4px solid var(--accent);">
+                <h3>📦 Control de Despachos (Cronograma de 18 Días Hábiles)</h3>
+                <div class="table-responsive">
+                    <table id="t-entregas">
+                        <thead><tr><th>F. Compra</th><th>Cliente</th><th>Proyecto / Muebles</th><th>Dirección de Despacho</th><th>📆 Límite Entrega</th><th>Estado</th><th>Operación</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -351,7 +369,7 @@
         </div>
     </main>
 
-    <!-- VENTANA MODAL PARA VER EL DETALLE COMPLETO DEL CLIENTE -->
+    <!-- VENTANA MODAL -->
     <div id="modal-detalle-cliente" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="cerrarModalDetalle()">&times;</span>
@@ -360,12 +378,11 @@
         </div>
     </div>
 
-    <!-- Integración directa con Firebase Nube en Tiempo Real -->
+    <!-- Integración Firebase en Tiempo Real -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Configuración exacta basada en tu consola
         const firebaseConfig = {
             apiKey: "AIzaSyAsnJ0uptAR6gxehle57HvIdJtED03nS9A",
             authDomain: "carmencita-design.firebaseapp.com",
@@ -379,25 +396,14 @@
 
         const app = initializeApp(firebaseConfig);
         const firebaseDb = getDatabase(app);
-
-        // Referencia central de datos en la nube
         const carmencitaRef = ref(firebaseDb, 'carmencita_data');
 
-        // Estructura de respaldo base por si la base de datos está vacía
-        let db = {
-            trabajadores: [],
-            ventas: [],
-            ingresosDirectos: [],
-            gastos: [],
-            nomina: [],
-            cajaMenor: []
-        };
+        let db = { trabajadores: [], ventas: [], ingresosDirectos: [], gastos: [], nomina: [], cajaMenor: [] };
+        window.moduloActual = 'dashboard';
 
-        // Escuchar cambios de Firebase en tiempo real
         onValue(carmencitaRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Sincronizar memoria interna con la nube
                 db = {
                     trabajadores: data.trabajadores || [],
                     ventas: data.ventas || [],
@@ -407,35 +413,33 @@
                     cajaMenor: data.cajaMenor || []
                 };
             }
-            // Cambiar indicador a conectado
             document.getElementById('sync-dot').classList.add('online');
             document.getElementById('sync-txt').innerText = "Nube Conectada";
-            
-            // Forzar renderizado con la data actualizada de la nube
             window.render();
         });
 
-        // Reemplazar la función salvar local por subida directa a Firebase
         window.salvar = function() {
-            set(carmencitaRef, db)
-                .then(() => {
-                    window.render();
-                })
-                .catch((error) => {
-                    console.error("Error al sincronizar con Firebase:", error);
-                    alert("Error al guardar en la nube. Revisa tu conexión.");
-                });
+            set(carmencitaRef, db).then(() => { window.render(); }).catch((e) => { console.error(e); });
         };
 
-        // Hacer globales las funciones que usan "db" o "salvar" para que los botones sigan sirviendo
         window.getDbData = () => db;
     </script>
 
     <script>
-        // Funciones auxiliares globales exactas a tu versión local
         function formatMoni(i) { let v = i.value.replace(/\D/g, ""); i.value = v === "" ? "" : Number(v).toLocaleString('es-CO'); }
         function cleanNum(t) { return parseFloat(t.toString().replace(/\./g, '')) || 0; }
         function m(n) { return '$' + n.toLocaleString('es-CO'); }
+
+        function calcular18DiasHabiles(fechaInicialStr) {
+            let fecha = new Date(fechaInicialStr + 'T12:00:00');
+            let diasSuma = 0;
+            while (diasSuma < 18) {
+                fecha.setDate(fecha.getDate() + 1);
+                let diaSemana = fecha.getDay();
+                if (diaSemana !== 0 && diaSemana !== 6) { diasSuma++; }
+            }
+            return fecha.toISOString().split('T')[0];
+        }
 
         function toggleSeccionTrabajador() {
             let box = document.getElementById('box-crear-trabajador-rapido');
@@ -443,33 +447,38 @@
         }
 
         function limpiarFiltros() {
-            document.getElementById('f-buscar').value = ''; document.getElementById('f-desde').value = ''; document.getElementById('f-hasta').value = ''; render();
+            document.getElementById('f-buscar').value = ''; 
+            document.getElementById('f-desde').value = ''; 
+            document.getElementById('f-hasta').value = ''; 
+            render();
         }
 
         function verificarCategoriaManual(select) {
             document.getElementById('box-cat-manual').style.display = (select.value === 'MANUAL') ? 'flex' : 'none';
         }
 
+        function cambiarEstadoEntrega(idVenta) {
+            let db = window.getDbData();
+            let v = db.ventas.find(x => x.id === idVenta);
+            if(v) {
+                v.estadoEntrega = (v.estadoEntrega === 'Entregado') ? 'Pendiente' : 'Entregado';
+                salvar();
+            }
+        }
+
         function render() {
-            // Obtener el estado actual de datos sincronizados
             if(!window.getDbData) return; 
             let db = window.getDbData();
 
-            // AUDITORÍA Y TOTALES FLUIDOS
             let ingresosBanco = db.ingresosDirectos.filter(i => i.medio === 'Banco').reduce((s, i) => s + i.monto, 0);
             let ingresosEfectivo = db.ingresosDirectos.filter(i => i.medio === 'Efectivo Grande').reduce((s, i) => s + i.monto, 0);
-
             let gastosBanco = db.gastos.filter(g => g.medio === 'Banco').reduce((s, g) => s + g.monto, 0);
             let gastosEfectivo = db.gastos.filter(g => g.medio === 'Efectivo Grande').reduce((s, g) => s + g.monto, 0);
-
             let nominaBanco = db.nomina.filter(n => n.origen === 'Banco').reduce((s, n) => s + n.monto, 0);
             let nominaEfectivo = db.nomina.filter(n => n.origen === 'Efectivo Grande').reduce((s, n) => s + n.monto, 0);
-
             let menosMenor = db.cajaMenor.filter(cm => cm.tipo === 'Gasto Menor').reduce((s, cm) => s + cm.monto, 0);
 
-            // NUEVO KPI REQUERIDO: TOTAL INGRESADO GLOBAL
             let globalIngresadoTodo = ingresosBanco + ingresosEfectivo;
-
             let totalDisponibleBanco = ingresosBanco - (gastosBanco + nominaBanco);
             let totalDisponibleEfectivo = ingresosEfectivo - (gastosEfectivo + nominaEfectivo);
             let totalGastosMes = gastosBanco + gastosEfectivo + menosMenor + nominaBanco + nominaEfectivo;
@@ -488,105 +497,144 @@
             let fDesde = document.getElementById('f-desde').value;
             let fHasta = document.getElementById('f-hasta').value;
 
-            function cumpleFiltro(fecha, texto) {
-                if (fDesde && fecha < fDesde) return false;
-                if (fHasta && fecha > fHasta) return false;
-                if (txtFiltro && !texto.toLowerCase().includes(txtFiltro)) return false;
+            function cumpleFiltroBase(fecha, textoComparar) {
+                if (window.moduloActual === 'dashboard') {
+                    if (fDesde && fecha < fDesde) return false;
+                    if (fHasta && fecha > fHasta) return false;
+                }
+                if (txtFiltro && !textoComparar.toLowerCase().includes(txtFiltro)) return false;
                 return true;
             }
 
-            // 1. DASHBOARD ENTRADAS
+            // 1. RENDERING VISTA RÁPIDA
             const bEntradas = document.querySelector('#t-dashboard-entradas tbody'); bEntradas.innerHTML = '';
             db.ingresosDirectos.forEach(i => {
-                if(cumpleFiltro(i.fecha, i.origen + " " + i.medio)) {
+                if(cumpleFiltroBase(i.fecha, i.origen + " " + i.medio)) {
                     bEntradas.innerHTML += `<tr><td>${i.fecha}</td><td><strong>${i.origen}</strong></td><td><span class="badge bg-banco">${i.medio}</span></td><td style="color:var(--success); font-weight:600;">${m(i.monto)}</td></tr>`;
                 }
             });
 
-            // 2. DASHBOARD SALIDAS
             const bSalidas = document.querySelector('#t-dashboard-salidas tbody'); bSalidas.innerHTML = '';
             db.gastos.forEach(g => {
-                if(cumpleFiltro(g.fecha, g.cat + " " + g.concepto)) {
+                if(cumpleFiltroBase(g.fecha, g.cat + " " + g.concepto)) {
                     bSalidas.innerHTML += `<tr><td>${g.fecha}</td><td>🏠 ${g.cat}</td><td>${g.concepto} [${g.medio}]</td><td style="color:var(--danger);">${m(g.monto)}</td></tr>`;
                 }
             });
             db.nomina.forEach(n => {
-                if(cumpleFiltro(n.fecha, n.nombre + " " + n.detalle)) {
+                if(cumpleFiltroBase(n.fecha, n.nombre + " " + n.detalle)) {
                     bSalidas.innerHTML += `<tr><td>${n.fecha}</td><td>👷 Nómina: ${n.nombre}</td><td>${n.detalle} [${n.origen}]</td><td style="color:var(--danger);">${m(n.monto)}</td></tr>`;
                 }
             });
 
-            // 3. TABLA VENTAS CON BOTÓN DETALLE Y EDITAR
+            // 2. RENDERING VENTAS Y CLIENTES
             const bVentas = document.querySelector('#t-ventas tbody'); bVentas.innerHTML = '';
             db.ventas.forEach(v => {
                 let pendiente = v.total - v.abonado;
-                bVentas.innerHTML += `
-                    <tr>
-                        <td><strong>${v.cliente}</strong></td>
-                        <td>${v.desc}</td><td>${m(v.total)}</td><td style="color:var(--info);">${m(v.abonado)}</td>
-                        <td style="color:var(--danger); font-weight:600;">${m(pendiente)}</td>
-                        <td>
-                            <div style="display:flex; gap:3px;">
-                                <button class="btn-accion btn-azul" style="padding:4px 6px;" onclick="verDetalleCliente('${v.id}')">👁️ Ver</button>
-                                <button class="btn-accion" style="background:#e2e8f0; color:#0f172a; padding:4px 6px;" onclick="iniciarEdicionVenta('${v.id}')">✏️ Editar</button>
-                                <button class="btn-accion btn-verde" style="padding:4px 6px;" onclick="abrirCajaAbono('${v.id}', '${v.cliente}')">💵 +</button>
-                                <button class="btn-accion btn-eliminar" style="padding:4px 6px;" onclick="eliminarVenta('${v.id}')">x</button>
-                            </div>
-                        </td>
-                    </tr>`;
-            });
-
-            // 4. TABLA COBROS
-            const bCobros = document.querySelector('#t-cobros tbody'); bCobros.innerHTML = '';
-            db.ventas.forEach(v => {
-                let pendiente = v.total - v.abonado;
-                if(pendiente > 0) {
-                    let msg = `Hola ${v.cliente}, recordamos amablemente tu saldo en mora de ${m(pendiente)} del proyecto ${v.desc}. ¡Muchas gracias!`;
-                    let uri = `https://api.whatsapp.com/send?phone=57${v.telefono.replace(/\s+/g, '')}&text=${encodeURIComponent(msg)}`;
-                    bCobros.innerHTML += `
+                let fechaOrig = v.fechaRegistro || new Date().toISOString().split('T')[0];
+                if(cumpleFiltroBase(fechaOrig, v.cliente + " " + v.desc + " " + v.cedula)) {
+                    bVentas.innerHTML += `
                         <tr>
-                            <td><strong>${v.cliente}</strong></td><td>${v.telefono}</td><td>${v.desc}</td>
-                            <td style="color:var(--danger); font-weight:700;">${m(pendiente)}</td>
-                            <td><a href="${uri}" target="_blank" class="btn btn-verde" style="padding:4px 8px; font-size:0.75rem;">💬 Cobrar</a></td>
+                            <td>${fechaOrig}</td>
+                            <td><strong>${v.cliente}</strong></td>
+                            <td>${v.desc}</td><td>${m(v.total)}</td><td style="color:var(--info);">${m(v.abonado)}</td>
+                            <td style="color:var(--danger); font-weight:600;">${m(pendiente)}</td>
+                            <td>
+                                <div style="display:flex; gap:3px;">
+                                    <button class="btn-accion btn-azul" style="padding:4px 6px;" onclick="verDetalleCliente('${v.id}')">👁️ Ver</button>
+                                    <button class="btn-accion" style="background:#e2e8f0; color:#0f172a; padding:4px 6px;" onclick="iniciarEdicionVenta('${v.id}')">✏️</button>
+                                    <button class="btn-accion btn-verde" style="padding:4px 6px;" onclick="abrirCajaAbono('${v.id}', '${v.cliente}')">💵 +</button>
+                                    <button class="btn-accion btn-eliminar" style="padding:4px 6px;" onclick="eliminarVenta('${v.id}')">x</button>
+                                </div>
+                            </td>
                         </tr>`;
                 }
             });
 
-            // 5. HISTORIAL NÓMINA
+            // 3. RENDERING ÓRDENES DE ENTREGA
+            const bEntregas = document.querySelector('#t-entregas tbody'); bEntregas.innerHTML = '';
+            db.ventas.forEach(v => {
+                let fechaOrig = v.fechaRegistro || new Date().toISOString().split('T')[0];
+                let limiteEntrega = calcular18DiasHabiles(fechaOrig);
+                let est = v.estadoEntrega || 'Pendiente';
+                let claseEst = (est === 'Entregado') ? 'badge-entregado' : 'badge-pendiente';
+                let txtBoton = (est === 'Entregado') ? '↩️ Pendiente' : '✅ Despachar';
+
+                if(cumpleFiltroBase(fechaOrig, v.cliente + " " + v.desc + " " + v.direccion + " " + v.barrio + " " + est)) {
+                    bEntregas.innerHTML += `
+                        <tr>
+                            <td>${fechaOrig}</td>
+                            <td><strong>${v.cliente}</strong></td>
+                            <td>${v.desc}</td>
+                            <td>${v.direccion || 'Taller'} (${v.barrio || 'S/B'})</td>
+                            <td style="color:var(--accent); font-weight:700;">📅 ${limiteEntrega}</td>
+                            <td><span class="badge ${claseEst}">${est}</span></td>
+                            <td>
+                                <button class="btn-accion btn-azul" style="padding:4px 8px;" onclick="cambiarEstadoEntrega('${v.id}')">${txtBoton}</button>
+                            </td>
+                        </tr>`;
+                }
+            });
+
+            // 4. RENDERING COBROS ACTIVOS
+            const bCobros = document.querySelector('#t-cobros tbody'); bCobros.innerHTML = '';
+            db.ventas.forEach(v => {
+                let pendiente = v.total - v.abonado;
+                if(pendiente > 0) {
+                    if(cumpleFiltroBase('', v.cliente + " " + v.desc)) {
+                        let msg = `Hola ${v.cliente}, recordamos amablemente tu saldo en mora de ${m(pendiente)} del proyecto ${v.desc}. ¡Muchas gracias!`;
+                        let uri = `https://api.whatsapp.com/send?phone=57${v.telefono.replace(/\s+/g, '')}&text=${encodeURIComponent(msg)}`;
+                        bCobros.innerHTML += `
+                            <tr>
+                                <td><strong>${v.cliente}</strong></td><td>${v.telefono}</td><td>${v.desc}</td>
+                                <td style="color:var(--danger); font-weight:700;">${m(pendiente)}</td>
+                                <td><a href="${uri}" target="_blank" class="btn btn-verde" style="padding:4px 8px; font-size:0.75rem;">💬 Cobrar</a></td>
+                            </tr>`;
+                    }
+                }
+            });
+
+            // 5. RENDERING PAGO OPERARIOS
             const bNomina = document.querySelector('#t-nomina tbody'); bNomina.innerHTML = '';
             db.nomina.forEach(n => {
-                bNomina.innerHTML += `<tr><td>${n.fecha}</td><td><strong>${n.nombre}</strong></td><td><span class="badge bg-efectivo">PAGO/ABONO</span></td><td>${n.detalle}</td><td>${n.origen}</td><td style="color:var(--danger); font-weight:600;">${m(n.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarNomina('${n.id}')">x</button></td></tr>`;
+                if(cumpleFiltroBase(n.fecha, n.nombre + " " + n.detalle)) {
+                    bNomina.innerHTML += `<tr><td>${n.fecha}</td><td><strong>${n.nombre}</strong></td><td><span class="badge bg-efectivo">PAGO/ABONO</span></td><td>${n.detalle}</td><td>${n.origen}</td><td style="color:var(--danger); font-weight:600;">${m(n.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarNomina('${n.id}')">x</button></td></tr>`;
+                }
             });
 
-            // 6. HISTORIAL GASTOS
+            // 6. RENDERING GASTOS
             const bGastos = document.querySelector('#t-gastos tbody'); bGastos.innerHTML = '';
             db.gastos.forEach(g => {
-                bGastos.innerHTML += `<tr><td>${g.fecha}</td><td><span class="badge bg-efectivo" style="background:#e2e8f0; color:#334155;">${g.cat}</span></td><td>${g.concepto}</td><td>${g.medio}</td><td style="color:var(--danger); font-weight:600;">${m(g.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarGasto('${g.id}')">x</button></td></tr>`;
+                if(cumpleFiltroBase(g.fecha, g.cat + " " + g.concepto)) {
+                    bGastos.innerHTML += `<tr><td>${g.fecha}</td><td><span class="badge bg-efectivo" style="background:#e2e8f0; color:#334155;">${g.cat}</span></td><td>${g.concepto}</td><td>${g.medio}</td><td style="color:var(--danger); font-weight:600;">${m(g.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarGasto('${g.id}')">x</button></td></tr>`;
+                }
             });
 
-            // 7. CAJA MENOR
+            // 7. RENDERING CAJA MENOR
             const bMenor = document.querySelector('#t-cajamenor tbody'); bMenor.innerHTML = '';
             db.cajaMenor.forEach(cm => {
-                let col = cm.tipo === 'Reembolso' ? 'color:var(--success);' : 'color:var(--danger);';
-                bMenor.innerHTML += `<tr><td>${cm.fecha}</td><td>${cm.tipo}</td><td>${cm.concepto}</td><td style="${col}">${m(cm.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarCM('${cm.id}')">x</button></td></tr>`;
+                if(cumpleFiltroBase(cm.fecha, cm.concepto + " " + cm.tipo)) {
+                    let col = cm.tipo === 'Reembolso' ? 'color:var(--success);' : 'color:var(--danger);';
+                    bMenor.innerHTML += `<tr><td>${cm.fecha}</td><td>${cm.tipo}</td><td>${cm.concepto}</td><td style="${col}">${m(cm.monto)}</td><td><button class="btn-accion btn-eliminar" onclick="eliminarCM('${cm.id}')">x</button></td></tr>`;
+                }
             });
         }
 
-        // CONTROLADORES DE CLIENTE (VER Y EDITAR)
         function verDetalleCliente(id) {
             let db = window.getDbData();
             let v = db.ventas.find(x => x.id === id);
+            let fOrig = v.fechaRegistro || new Date().toISOString().split('T')[0];
             let h = `
                 <p><strong>Cliente:</strong> ${v.cliente}</p>
                 <p><strong>Cédula/NIT:</strong> ${v.cedula || 'No registrada'}</p>
                 <p><strong>Teléfono:</strong> ${v.telefono}</p>
                 <p><strong>Dirección:</strong> ${v.direccion}</p>
                 <p><strong>Barrio:</strong> ${v.barrio || 'No registrado'}</p>
-                <p><strong>Correo:</strong> ${v.correo || 'No registrado'}</p>
-                <p><strong>Proyecto contratado:</strong> ${v.desc}</p>
+                <p><strong>Proyecto:</strong> ${v.desc}</p>
+                <p><strong>F. Contrato:</strong> ${fOrig}</p>
+                <p style="color:var(--accent)"><strong>📆 Entrega Estimada:</strong> ${calcular18DiasHabiles(fOrig)}</p>
                 <p><strong>Valor Contrato:</strong> ${m(v.total)}</p>
-                <p style="color:var(--success)"><strong>Abonado Real:</strong> ${m(v.abonado)}</p>
-                <p style="color:var(--danger)"><strong>Saldo en Mora:</strong> ${m(v.total - v.abonado)}</p>
+                <p style="color:var(--success)"><strong>Abonado:</strong> ${m(v.abonado)}</p>
+                <p style="color:var(--danger)"><strong>Saldo Pendiente:</strong> ${m(v.total - v.abonado)}</p>
             `;
             document.getElementById('contenido-modal-detalle').innerHTML = h;
             document.getElementById('modal-detalle-cliente').style.display = 'flex';
@@ -612,7 +660,6 @@
             document.getElementById('lbl-formulario-modo').innerText = "✏️ Modificar Datos del Contrato";
             document.getElementById('btn-guardar-venta-accion').innerText = "💾 Aplicar Cambios";
             document.getElementById('btn-cancelar-edicion-venta').style.display = 'inline-flex';
-            document.getElementById('v-cliente').focus();
         }
 
         function cancelarEdicionVenta() {
@@ -640,6 +687,7 @@
             let correo = document.getElementById('v-correo').value;
             let desc = document.getElementById('v-desc').value;
             let total = cleanNum(document.getElementById('v-total').value);
+            let fechaHoy = new Date().toISOString().split('T')[0];
 
             if(!cliente || total <= 0) return alert('Verifica datos y monto total.');
 
@@ -652,11 +700,14 @@
             } else {
                 let abono = cleanNum(document.getElementById('v-abono').value);
                 let medio = document.getElementById('v-medio').value;
-                db.ventas.push({ id: 'v_'+Date.now(), cliente, cedula, direccion, barrio, telefono, correo, desc, total, abonado: abono });
+                db.ventas.push({ id: 'v_'+Date.now(), fechaRegistro: fechaHoy, cliente, cedula, direccion, barrio, telefono, correo, desc, total, abonado: abono, estadoEntrega: 'Pendiente' });
                 if (abono > 0) {
-                    db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: new Date().toISOString().split('T')[0], origen: `Abono Inicial - ${cliente}`, medio, monto: abono });
+                    db.ingresosDirectos.push({ id: 'i_'+Date.now(), fecha: fechaHoy, origen: `Abono Inicial - ${cliente}`, medio, monto: abono });
                 }
-                document.getElementById('v-cliente').value = ''; document.getElementById('v-total').value = ''; document.getElementById('v-abono').value = '';
+                
+                document.getElementById('v-cliente').value = ''; document.getElementById('v-cedula').value = ''; document.getElementById('v-direccion').value = ''; 
+                document.getElementById('v-barrio').value = ''; document.getElementById('v-telefono').value = ''; document.getElementById('v-correo').value = ''; 
+                document.getElementById('v-desc').value = ''; document.getElementById('v-total').value = ''; document.getElementById('v-abono').value = '';
             }
             salvar();
         }
@@ -670,7 +721,7 @@
             let correo = document.getElementById('t-correo').value;
             let cargo = document.getElementById('t-cargo').value;
 
-            if(!nombre || !cedula || !cargo) return alert('Por favor escribe Nombre, Cédula y Cargo del operario.');
+            if(!nombre || !cedula || !cargo) return alert('Verifica campos.');
             db.trabajadores.push({ id: 't_'+Date.now(), nombre, cedula, telefono, direccion, correo, cargo });
             document.getElementById('t-nombre').value = ''; document.getElementById('t-cedula').value = ''; document.getElementById('t-cargo').value = '';
             toggleSeccionTrabajador(); salvar();
@@ -681,7 +732,6 @@
             document.getElementById('lbl-abono-cliente').innerText = cliente;
             document.getElementById('abono-id-cliente').value = id;
             document.getElementById('abono-monto-input').value = '';
-            document.getElementById('abono-monto-input').focus();
         }
         function cerrarBoxAbono() { document.getElementById('box-abono-practico').style.display = 'none'; }
         
@@ -704,7 +754,7 @@
             let origen = document.getElementById('n-origen').value;
             let monto = cleanNum(document.getElementById('n-monto').value);
 
-            if(!nombre || monto <= 0) return alert('Monto inválido o no hay operarios.');
+            if(!nombre || monto <= 0) return alert('Verifica.');
             db.nomina.push({ id: 'n_'+Date.now(), fecha: new Date().toISOString().split('T')[0], nombre, tipo: 'Pago o Abono', detalle, origen, monto });
             document.getElementById('n-detalle').value = ''; document.getElementById('n-monto').value = '';
             salvar();
@@ -719,7 +769,7 @@
             let medio = document.getElementById('g-medio').value;
             let monto = cleanNum(document.getElementById('g-monto').value);
 
-            if(!catFinal || monto <= 0) return alert('Verifica campos.');
+            if(!catFinal || monto <= 0) return alert('Verifica.');
             db.gastos.push({ id: 'g_'+Date.now(), fecha: new Date().toISOString().split('T')[0], cat: catFinal, concepto, medio, monto });
             document.getElementById('g-concepto').value = ''; document.getElementById('g-monto').value = '';
             salvar();
@@ -730,29 +780,57 @@
             let tipo = document.getElementById('cm-tipo').value;
             let concepto = document.getElementById('cm-concepto').value;
             let monto = cleanNum(document.getElementById('cm-monto').value);
-            if(!concepto || monto <= 0) return alert('Verifica campos.');
+            if(!concepto || monto <= 0) return alert('Verifica.');
             db.cajaMenor.push({ id: 'cm_'+Date.now(), fecha: new Date().toISOString().split('T')[0], tipo, concepto, monto });
             document.getElementById('cm-concepto').value = ''; document.getElementById('cm-monto').value = '';
             salvar();
         }
 
-        function eliminarVenta(id) { let db = window.getDbData(); if(confirm('¿Eliminar contrato?')) { db.ventas = db.ventas.filter(x=>x.id!==id); salvar(); } }
-        function eliminarNomina(id) { let db = window.getDbData(); if(confirm('¿Eliminar pago?')) { db.nomina = db.nomina.filter(x=>x.id!==id); salvar(); } }
-        function eliminarGasto(id) { let db = window.getDbData(); if(confirm('¿Eliminar gasto?')) { db.gastos = db.gastos.filter(x=>x.id!==id); salvar(); } }
-        function eliminarCM(id) { let db = window.getDbData(); if(confirm('¿Eliminar movimiento?')) { db.cajaMenor = db.cajaMenor.filter(x=>x.id!==id); salvar(); } }
+        function eliminarVenta(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.ventas = db.ventas.filter(x=>x.id!==id); salvar(); } }
+        function eliminarNomina(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.nomina = db.nomina.filter(x=>x.id!==id); salvar(); } }
+        function eliminarGasto(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.gastos = db.gastos.filter(x=>x.id!==id); salvar(); } }
+        function eliminarCM(id) { let db = window.getDbData(); if(confirm('¿Eliminar?')) { db.cajaMenor = db.cajaMenor.filter(x=>x.id!==id); salvar(); } }
 
         function irA(id) {
+            window.moduloActual = id;
             document.querySelectorAll('.seccion-vista').forEach(v => v.classList.remove('activa'));
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
             document.getElementById('mod-' + id).classList.add('activa');
             document.getElementById('btn-' + id).classList.add('active');
             
             document.getElementById('contenedor-kpis-principal').style.display = (id === 'dashboard') ? 'grid' : 'none';
+            document.getElementById('f-buscar').value = ''; 
 
-            const t = { dashboard: "📊 Vista Rápida de Entradas y Salidas", ventas: "🛍️ Ventas y Fichas de Clientes", cobros: "🚨 Cartera y Cobros en Espera", nomina: "👷 Pagos y Descuentos a Operarios", gastos: "💡 Gastos y Egresos de Empresa", cajamenor: "🪙 Caja Menor Taller" };
-            const d = { dashboard: "Resumen de transferencias bancarias y efectivo real.", ventas: "Control de contratos y datos de clientes.", cobros: "Seguimiento de saldos pendientes con recordatorios rápidos.", nomina: "Historial de vales de operarios y registro directo de personal.", gastos: "Control de insumos, materiales y arriendos.", cajamenor: "Efectivo menor asignado al taller." };
+            const labels = {
+                dashboard: "🔍 Buscar en Entradas/Salidas",
+                ventas: "🔍 Buscar por Cliente, Proyecto o Cédula",
+                entregas: "🔍 Buscar por Cliente, Dirección, Barrio o Estado (Pendiente/Entregado)",
+                cobros: "🔍 Buscar Deudor o Trabajo",
+                nomina: "🔍 Buscar Vales por Nombre de Operario o Concepto",
+                gastos: "🔍 Buscar Gasto por Categoría o Concepto",
+                cajamenor: "🔍 Buscar Movimiento de Caja Menor"
+            };
+            document.getElementById('lbl-buscador-dinamico').innerText = labels[id] || "🔍 Buscar en este módulo";
+
+            if (id === 'dashboard') {
+                document.getElementById('div-filtro-desde').style.display = 'flex';
+                document.getElementById('div-filtro-hasta').style.display = 'flex';
+            } else {
+                document.getElementById('div-filtro-desde').style.display = 'none';
+                document.getElementById('div-filtro-hasta').style.display = 'none';
+            }
+
+            const t = { 
+                dashboard: "📊 Vista Rápida de Entradas y Salidas", 
+                ventas: "🛍️ Ventas y Fichas de Clientes", 
+                entregas: "📦 Órdenes de Entrega de Carpintería",
+                cobros: "🚨 Cartera y Cobros en Espera", 
+                nomina: "👷 Pagos y Descuentos a Operarios", 
+                gastos: "💡 Gastos y Egresos de Empresa", 
+                cajamenor: "🪙 Caja Menor Taller" 
+            };
             document.getElementById('txt-modulo-titulo').innerText = t[id];
-            document.getElementById('txt-modulo-desc').innerText = d[id];
+            render();
         }
     </script>
 </body>
