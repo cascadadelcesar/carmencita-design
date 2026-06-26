@@ -133,6 +133,8 @@
         .btn-accion { padding: 0.35rem 0.5rem; font-size: 0.75rem; border-radius: 0.25rem; border: none; cursor: pointer; font-weight: 600; }
         .btn-eliminar { background-color: #fee2e2; color: #991b1b; }
         .btn-editar { background-color: #dbeafe; color: #1e40af; }
+        .btn-whatsapp { background-color: #25D366; color: white; }
+        .btn-whatsapp:hover { background-color: #1da851; color: white; }
 
         .badge { padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .bg-efectivo { background-color: #fef3c7; color: #92400e; }
@@ -1205,7 +1207,7 @@
             }, 300);
         }
 
-        // ===== ENVIAR COTIZACIÓN POR WHATSAPP =====
+        // ===== ENVIAR COTIZACIÓN POR WHATSAPP (DESDE FORMULARIO) =====
         function enviarCotizacionWhatsApp() {
             let telefono = document.getElementById('c-telefono').value.trim();
             if (!telefono) return alert('Por favor ingresa el número de teléfono del cliente.');
@@ -1249,6 +1251,7 @@
             window.open(uri, '_blank');
         }
 
+        // ===== ENVIAR COTIZACIÓN EXISTENTE POR WHATSAPP (CON DETALLE COMPLETO) =====
         function enviarCotizacionExistenteWhatsApp(id) {
             let db = window.getDbData();
             let c = db.cotizaciones.find(x => x.id === id);
@@ -1285,6 +1288,55 @@
             msg += `\n¡Esperamos su pronta respuesta! 🪵`;
 
             let uri = `https://wa.me/57${cleanNumCel}?text=${encodeURIComponent(msg)}`;
+            window.open(uri, '_blank');
+        }
+
+        // ===== ENVIAR WHATSAPP DESDE ÓRDENES DE ENTREGA (MENSAJE GENÉRICO) =====
+        function enviarWhatsAppEntrega(idVenta) {
+            let db = window.getDbData();
+            let v = db.ventas.find(x => x.id === idVenta);
+            if (!v) return alert('Venta no encontrada.');
+            
+            let telefono = v.telefono || '';
+            if (!telefono) return alert('Esta venta no tiene número de teléfono registrado.');
+            
+            let cleanNumCel = telefono.replace(/\D/g, '');
+            if (cleanNumCel.length < 7) return alert('El número de teléfono parece incompleto.');
+            
+            let msg = `🏢 CARMENCITA DESIGN - Muebles y Rústicos%0A%0A`;
+            msg += `Hola ${v.cliente}, le saludamos de CARMENCITA DESIGN.%0A%0A`;
+            msg += `📦 Su pedido está en proceso de despacho.%0A`;
+            msg += `📋 Factura N° ${v.factura || 'S/N'}: ${v.desc || 'Sin descripción'}.%0A%0A`;
+            msg += `📝 Por favor, confírmenos su disponibilidad para coordinar la entrega.%0A%0A`;
+            msg += `¡Quedamos atentos a su respuesta! 🪵`;
+            
+            let uri = `https://wa.me/57${cleanNumCel}?text=${msg}`;
+            window.open(uri, '_blank');
+        }
+
+        // ===== ENVIAR WHATSAPP DESDE COTIZACIONES (MENSAJE GENÉRICO) =====
+        function enviarWhatsAppCotizacion(id) {
+            let db = window.getDbData();
+            let c = db.cotizaciones.find(x => x.id === id);
+            if (!c) return alert('Cotización no encontrada.');
+            
+            let telefono = c.telefono || '';
+            if (!telefono) return alert('Esta cotización no tiene número de teléfono registrado.');
+            
+            let cleanNumCel = telefono.replace(/\D/g, '');
+            if (cleanNumCel.length < 7) return alert('El número de teléfono parece incompleto.');
+            
+            let estadoMsg = c.estado === 'Aprobada' ? 'aprobada' : 'pendiente';
+            
+            let msg = `🏢 CARMENCITA DESIGN - Muebles y Rústicos%0A%0A`;
+            msg += `Hola ${c.cliente}, le saludamos de CARMENCITA DESIGN.%0A%0A`;
+            msg += `📋 Le recordamos que tiene una cotización ${estadoMsg} con nosotros:%0A`;
+            msg += `📄 N° ${c.numero || 'S/N'} - ${c.productos ? c.productos.substring(0, 100) + '...' : 'Sin productos'}.%0A`;
+            msg += `💰 Valor total: ${m(c.total)}.%0A%0A`;
+            msg += `📝 Si necesita más información o desea realizar algún ajuste, no dude en contactarnos.%0A%0A`;
+            msg += `¡Esperamos su pronta respuesta! 🪵`;
+            
+            let uri = `https://wa.me/57${cleanNumCel}?text=${msg}`;
             window.open(uri, '_blank');
         }
 
@@ -2227,7 +2279,7 @@
                 }
             });
 
-            // Entregas
+            // Entregas - CON BOTÓN WHATSAPP
             const bEntregas = document.querySelector('#t-entregas tbody');
             bEntregas.innerHTML = '';
             db.ventas.forEach(v => {
@@ -2263,6 +2315,7 @@
                                 <div style="display:flex; gap:3px; flex-wrap:wrap;">
                                     <button class="btn-accion btn-azul" style="padding:4px 6px;" onclick="cambiarEstadoEntrega('${v.id}')">${txtBoton}</button>
                                     <button class="btn-accion btn-editar" style="padding:4px 6px;" onclick="abrirModalEditarDespacho('${v.id}')">✏️</button>
+                                    <button class="btn-accion btn-whatsapp" style="padding:4px 6px; color:white;" onclick="enviarWhatsAppEntrega('${v.id}')">💬</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -2290,7 +2343,7 @@
                 }
             });
 
-            // Cotizaciones
+            // Cotizaciones - CON BOTÓN WHATSAPP ADICIONAL
             const bCotizaciones = document.querySelector('#t-cotizaciones tbody');
             bCotizaciones.innerHTML = '';
             db.cotizaciones.forEach(c => {
@@ -2317,7 +2370,8 @@
                                 <div style="display:flex; gap:3px; flex-wrap:wrap;">
                                     <button class="btn-accion btn-azul" style="padding:4px 6px;" onclick="verCotizacionCompleta('${c.id}')">👁️</button>
                                     ${botonAprobar}
-                                    <button class="btn-accion" style="background:#25D366; color:white; padding:4px 6px;" onclick="enviarCotizacionExistenteWhatsApp('${c.id}')">💬</button>
+                                    <button class="btn-accion btn-whatsapp" style="padding:4px 6px; color:white;" onclick="enviarWhatsAppCotizacion('${c.id}')">💬</button>
+                                    <button class="btn-accion" style="background:#25D366; color:white; padding:4px 6px;" onclick="enviarCotizacionExistenteWhatsApp('${c.id}')">📋</button>
                                     <button class="btn-accion" style="background:#cbd5e1; color:#0f172a; padding:4px 6px;" onclick="iniciarEdicionCotizacion('${c.id}')">✏️</button>
                                     <button class="btn-accion btn-eliminar" style="padding:4px 6px;" onclick="eliminarCotizacion('${c.id}')">x</button>
                                 </div>
